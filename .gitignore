@@ -1,0 +1,12 @@
+# Config personal / secretos — nunca se comparten
+dot-claude/settings.local.json
+dot-claude/**/settings.local.json
+
+# Backups que genera install.sh
+*.bak-*
+
+# Ruido del SO / editores
+.DS_Store
+*.swp
+.idea/
+.vscode/

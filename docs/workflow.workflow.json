@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Proceso de feature punta a punta",
+    "subtitle": "claude-devkit · brainstorm → plan → docs → TDD → review → cierre",
+    "output": "docs/workflow-diagram.html"
+  },
+  "lanes": [
+    { "id": "design", "label": "Diseño" },
+    { "id": "build", "label": "Construcción" },
+    { "id": "review", "label": "Review & Cierre" },
+    { "id": "exceptions", "label": "Si hay bloqueantes", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "p0", "label": "Entender + planear", "fromCol": 0, "toCol": 1 },
+    { "id": "p1", "label": "Documentar + construir (TDD)", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "p2", "label": "Revisar + integrar", "fromCol": 4, "toCol": 5 }
+  ],
+  "mainPath": ["brainstorm", "plan", "docs", "stage", "review", "cierre"],
+  "nodes": [
+    { "id": "brainstorm", "lane": "design", "col": 0, "type": "external", "label": "Brainstorm", "sublabel": "/feature", "tag": "escala por complejidad" },
+    { "id": "plan", "lane": "design", "col": 1, "type": "backend", "label": "Plan por capas", "sublabel": "plan mode", "tag": "architecture-planner" },
+    { "id": "docs", "lane": "build", "col": 2, "type": "cloud", "label": "Docs & Diag", "sublabel": "/document · /diagram", "tag": "docs-writer · archify" },
+    { "id": "stage", "lane": "build", "col": 3, "type": "backend", "label": "Etapa TDD", "sublabel": "/stage", "tag": "test-writer · rojo→verde" },
+    { "id": "review", "lane": "review", "col": 4, "type": "security", "label": "Review", "sublabel": "/review", "tag": "code + security reviewer" },
+    { "id": "cierre", "lane": "review", "col": 5, "type": "backend", "label": "Cierre", "sublabel": "commit / PR" },
+    { "id": "fix", "lane": "exceptions", "col": 4, "type": "messagebus", "label": "Resolver", "sublabel": "bloqueantes 🔴" }
+  ],
+  "edges": [
+    { "from": "brainstorm", "to": "plan", "variant": "default" },
+    { "from": "plan", "to": "docs", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "docs", "to": "stage", "variant": "default" },
+    { "from": "stage", "to": "review", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop" },
+    { "from": "review", "to": "cierre", "variant": "default" },
+    { "from": "review", "to": "fix", "label": "hallazgos", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1, "labelDy": 12 },
+    { "from": "fix", "to": "stage", "label": "corregir", "variant": "dashed", "role": "branch", "fromSide": "left", "toSide": "bottom", "route": "return-left" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Regla de oro",
+      "items": [
+        "No se avanza de etapa sin la anterior en verde",
+        "Cada etapa: rojo → verde → refactor → review",
+        "El contrato de API se fija antes de codear",
+        "Front y back avanzan en paralelo"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Agnóstico del stack",
+      "items": [
+        "Mismo patrón en Node, Rails o Laravel",
+        "controller fino → service → modelo → serializer",
+        "Docs y diagramas se generan sobre la marcha",
+        "Portable: git clone + install.sh en cualquier máquina"
+      ]
+    }
+  ]
+}
