@@ -3,7 +3,7 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "Proceso de feature punta a punta",
-    "subtitle": "claude-devkit · brainstorm → plan → docs → TDD → review → cierre",
+    "subtitle": "claude-devkit · brainstorm → plan → spec+docs → TDD → review+verify → cierre",
     "output": "docs/workflow-diagram.html"
   },
   "lanes": [
@@ -21,10 +21,10 @@
   "nodes": [
     { "id": "brainstorm", "lane": "design", "col": 0, "type": "external", "label": "Brainstorm", "sublabel": "/feature", "tag": "escala por complejidad" },
     { "id": "plan", "lane": "design", "col": 1, "type": "backend", "label": "Plan por capas", "sublabel": "plan mode", "tag": "architecture-planner" },
-    { "id": "docs", "lane": "build", "col": 2, "type": "cloud", "label": "Docs & Diag", "sublabel": "/document · /diagram", "tag": "docs-writer · archify" },
+    { "id": "docs", "lane": "build", "col": 2, "type": "cloud", "label": "Spec+Docs", "sublabel": "/spec · /doc · /tasks", "tag": "scenarios + diagrama" },
     { "id": "stage", "lane": "build", "col": 3, "type": "backend", "label": "Etapa TDD", "sublabel": "/stage", "tag": "test-writer · rojo→verde" },
-    { "id": "review", "lane": "review", "col": 4, "type": "security", "label": "Review", "sublabel": "/review", "tag": "code + security reviewer" },
-    { "id": "cierre", "lane": "review", "col": 5, "type": "backend", "label": "Cierre", "sublabel": "commit / PR" },
+    { "id": "review", "lane": "review", "col": 4, "type": "security", "label": "Review", "sublabel": "/review", "tag": "code · security · verify" },
+    { "id": "cierre", "lane": "review", "col": 5, "type": "backend", "label": "Cierre", "sublabel": "commit · archive" },
     { "id": "fix", "lane": "exceptions", "col": 4, "type": "messagebus", "label": "Resolver", "sublabel": "bloqueantes 🔴" }
   ],
   "edges": [
@@ -42,19 +42,19 @@
       "title": "Regla de oro",
       "items": [
         "No se avanza de etapa sin la anterior en verde",
-        "Cada etapa: rojo → verde → refactor → review",
-        "El contrato de API se fija antes de codear",
-        "Front y back avanzan en paralelo"
+        "Cada etapa: rojo → verde → refactor → review + verify",
+        "verify = cumple los scenarios del spec, uno por uno",
+        "Gate humano: Claude frena y espera tu OK por etapa"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Agnóstico del stack",
+      "title": "Estado durable en disco",
       "items": [
-        "Mismo patrón en Node, Rails o Laravel",
-        "controller fino → service → modelo → serializer",
-        "Docs y diagramas se generan sobre la marcha",
-        "Portable: git clone + install.sh en cualquier máquina"
+        "spec.md (qué lograr) · docs.md (diseño) · tasks.md (checklist)",
+        "Podés cambiar de ventana sin perder el plan",
+        "Al cerrar: se archiva el spec como historial (ADR)",
+        "Portable y agnóstico: Node, Rails o Laravel"
       ]
     }
   ]

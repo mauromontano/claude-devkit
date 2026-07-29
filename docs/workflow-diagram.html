@@ -496,12 +496,12 @@
         <div class="pulse-dot"></div>
         <h1>Proceso de feature punta a punta</h1>
       </div>
-      <p class="subtitle">claude-devkit · brainstorm → plan → docs → TDD → review → cierre</p>
+      <p class="subtitle">claude-devkit · brainstorm → plan → spec+docs → TDD → review+verify → cierre</p>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container">
-      <svg viewBox="0 0 720 652" role="img" aria-label="Proceso de feature punta a punta — claude-devkit · brainstorm → plan → docs → TDD → review → cierre (workflow diagram)">
+      <svg viewBox="0 0 720 652" role="img" aria-label="Proceso de feature punta a punta — claude-devkit · brainstorm → plan → spec+docs → TDD → review+verify → cierre (workflow diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -576,9 +576,9 @@
 
         <rect x="254" y="209" width="92" height="68" rx="6" class="c-mask"/>
         <rect x="254" y="209" width="92" height="68" rx="6" class="c-cloud" stroke-width="1.5"/>
-        <text x="300" y="230" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Docs &amp; Diag</text>
-        <text x="300" y="247" class="t-muted" font-size="8" text-anchor="middle">/document · /diagram</text>
-        <text x="300" y="265" class="t-cloud" font-size="7" text-anchor="middle">docs-writer · archify</text>
+        <text x="300" y="230" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Spec+Docs</text>
+        <text x="300" y="247" class="t-muted" font-size="8" text-anchor="middle">/spec · /doc · /tasks</text>
+        <text x="300" y="265" class="t-cloud" font-size="7" text-anchor="middle">scenarios + diagrama</text>
 
         <rect x="384" y="209" width="92" height="68" rx="6" class="c-mask"/>
         <rect x="384" y="209" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
@@ -590,12 +590,12 @@
         <rect x="454" y="333" width="92" height="68" rx="6" class="c-security" stroke-width="1.5"/>
         <text x="500" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Review</text>
         <text x="500" y="371" class="t-muted" font-size="8" text-anchor="middle">/review</text>
-        <text x="500" y="389" class="t-security" font-size="7" text-anchor="middle">code + security reviewer</text>
+        <text x="500" y="389" class="t-security" font-size="7" text-anchor="middle">code · security · verify</text>
 
         <rect x="579" y="341" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="579" y="341" width="92" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
         <text x="625" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Cierre</text>
-        <text x="625" y="379" class="t-muted" font-size="8" text-anchor="middle">commit / PR</text>
+        <text x="625" y="379" class="t-muted" font-size="8" text-anchor="middle">commit · archive</text>
 
         <rect x="454" y="465" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="454" y="465" width="92" height="52" rx="6" class="c-messagebus" stroke-width="1.5"/>
@@ -637,22 +637,22 @@
         </div>
         <ul>
           <li>&bull; No se avanza de etapa sin la anterior en verde</li>
-          <li>&bull; Cada etapa: rojo → verde → refactor → review</li>
-          <li>&bull; El contrato de API se fija antes de codear</li>
-          <li>&bull; Front y back avanzan en paralelo</li>
+          <li>&bull; Cada etapa: rojo → verde → refactor → review + verify</li>
+          <li>&bull; verify = cumple los scenarios del spec, uno por uno</li>
+          <li>&bull; Gate humano: Claude frena y espera tu OK por etapa</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot emerald"></div>
-          <h3>Agnóstico del stack</h3>
+          <h3>Estado durable en disco</h3>
         </div>
         <ul>
-          <li>&bull; Mismo patrón en Node, Rails o Laravel</li>
-          <li>&bull; controller fino → service → modelo → serializer</li>
-          <li>&bull; Docs y diagramas se generan sobre la marcha</li>
-          <li>&bull; Portable: git clone + install.sh en cualquier máquina</li>
+          <li>&bull; spec.md (qué lograr) · docs.md (diseño) · tasks.md (checklist)</li>
+          <li>&bull; Podés cambiar de ventana sin perder el plan</li>
+          <li>&bull; Al cerrar: se archiva el spec como historial (ADR)</li>
+          <li>&bull; Portable y agnóstico: Node, Rails o Laravel</li>
         </ul>
       </div>
     </div>

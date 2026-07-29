@@ -7,7 +7,7 @@ recorre las mismas fases pero más liviano; una compleja se toma cada fase en se
 El disparador es `/feature <descripción>`. A partir de ahí, el ciclo es:
 
 ```
-Brainstorm → Plan → Docs+Diagrama → [ Etapa → Test → Código → Review ]×N → Cierre
+Brainstorm → Plan → Spec + Docs + Diagrama → Tasks → [ Etapa: Test → Código → Review + Verify ]×N → Cierre + Archive
 ```
 
 Regla de oro: **no se avanza de etapa sin la anterior en verde y revisada.**
@@ -63,20 +63,23 @@ Para el diseño de arquitectura y las alternativas se puede delegar al subagent
 
 ---
 
-## Fase 2 — Documentación y diagrama
+## Fase 2 — Spec, documentación y diagrama
 
-**Objetivo:** que el diseño quede escrito y visual antes de implementar.
+**Objetivo:** que el diseño quede escrito, verificable y visual antes de implementar.
 
-- `/document` genera `docs/<feature>.md`: problema, decisiones, contrato de API, modelo
-  de datos, y la lista de etapas del plan. Es la fuente de verdad del diseño.
-- `/diagram` invoca **archify** para producir el diagrama que corresponda:
-  - **arquitectura** si hay varias piezas/servicios,
-  - **secuencia** si el foco es un flujo de llamadas (ej. un pago con webhook),
-  - **flujo/estado** si hay una máquina de estados o un proceso con ramas.
+- `/spec` genera `docs/<feature>-spec.md`: **requisitos** + **scenarios de aceptación** en
+  formato Given/When/Then. Los scenarios son criterios objetivos de "esto está bien" —
+  y enganchan directo con los tests (cada scenario ≈ un test). Es lo que después se
+  **verifica** contra la implementación (Fase 4).
+- `/document` genera `docs/<feature>.md`: problema, decisiones (con alternativas
+  descartadas), contrato de API y modelo de datos. Es la fuente de verdad del diseño.
+- `/tasks` genera `docs/<feature>-tasks.md`: un **checklist de etapas** (una casilla por
+  etapa) que se va tildando. Es el **estado durable** del trabajo: si cambiás de ventana,
+  este archivo dice exactamente qué falta.
+- `/diagram` invoca **archify** para el diagrama que corresponda (arquitectura, secuencia
+  o flujo/estado). Se guarda como HTML en `docs/`.
 
-El diagrama se guarda como HTML en `docs/` (tiene toggle dark/light y export a PNG/SVG).
-
-**Salida:** doc de diseño + diagrama, commiteados antes de codear.
+**Salida:** spec + scenarios + tasks + doc + diagrama, commiteados antes de codear.
 
 ---
 
@@ -109,6 +112,10 @@ Al cerrar una etapa, `/review` delega a los subagents de review:
 - **`security-reviewer`** (si la etapa toca auth, pagos, datos sensibles o input externo):
   inyección, XSS/CSRF, manejo de secretos, autorización, validación de entrada.
 
+- **`spec-verifier`** (verify): valida que lo implementado **cumple los scenarios del
+  spec** (Fase 2). No es lo mismo que "el code review pasó": acá se chequea contra los
+  criterios de aceptación, uno por uno, y se tilda la etapa en `docs/<feature>-tasks.md`.
+
 Los reviewers corren en contexto aislado y devuelven feedback accionable. Los hallazgos
 se resuelven **antes** de pasar a la etapa siguiente. Si un hallazgo cambia el diseño,
 se vuelve a la fase 1 para esa parte.
@@ -130,6 +137,9 @@ la prepara. Vos aprobás etapa por etapa.
 - Correr el suite **completo** del proyecto (no solo el de la feature).
 - Regenerar el diagrama si la arquitectura cambió.
 - Armar el commit / PR con un mensaje que explique el *por qué*, no solo el *qué*.
+- **Archive:** mover el spec cerrado a `docs/archive/<feature>-spec.md`. Queda como
+  historial de decisiones (tipo ADR): por qué se hizo así y qué se descartó. El próximo
+  que toque esto —vos en 6 meses u otra persona— entiende el contexto sin arqueología.
 
 ---
 
@@ -139,10 +149,10 @@ la prepara. Vos aprobás etapa por etapa.
 |------|---------|----------|------|-------|
 | 0 Brainstorm | `/feature` | — | — | — |
 | 1 Plan | plan mode | `architecture-planner` | — | — |
-| 2 Docs+diagrama | `/document`, `/diagram` | `docs-writer` | — | archify |
+| 2 Spec+docs+diagrama | `/spec`, `/document`, `/tasks`, `/diagram` | `docs-writer` | — | archify |
 | 3 Implementación | `/stage` | `test-writer` | PostToolUse (lint/test) | por framework |
-| 4 Review | `/review` | `code-reviewer`, `security-reviewer` | — | — |
-| 5 Cierre | commit/PR | — | PreToolUse (protege archivos) | — |
+| 4 Review + Verify | `/review` | `code-reviewer`, `security-reviewer`, `spec-verifier` | — | — |
+| 5 Cierre + Archive | commit/PR | — | PreToolUse (protege archivos) | — |
 
 ---
 
@@ -151,10 +161,11 @@ la prepara. Vos aprobás etapa por etapa.
 El enemigo de una tarea larga es llenar la ventana de contexto y perder el plan. La
 solución es **no usar el contexto como memoria** — externalizar el estado a disco:
 
-- **El plan vive en `docs/<feature>.md`**, con el checklist de etapas y su estado. Esa es
-  la fuente de verdad. Si tenés que abrir una ventana nueva (o `/clear`), la sesión
-  siguiente lee ese doc y retoma exactamente donde quedaste. El plan no se pierde porque
-  nunca vivió solo en el chat.
+- **El estado durable vive en disco**: `docs/<feature>-spec.md` (qué hay que lograr),
+  `docs/<feature>.md` (decisiones/diseño) y `docs/<feature>-tasks.md` (el checklist de
+  etapas con lo que falta). Si abrís una ventana nueva (o `/clear`), la sesión siguiente
+  lee esos archivos y retoma exactamente donde quedaste. El plan no se pierde porque nunca
+  vivió solo en el chat.
 - **Los subagents aíslan el ruido.** Leer muchos archivos, correr suites y hacer reviews
   pasa en la ventana del subagent, no en la principal. El contexto principal queda liviano.
 - **Commit por etapa.** El historial de git es estado recuperable: podés reconstruir dónde

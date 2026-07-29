@@ -5,8 +5,9 @@ tools: Read, Grep, Glob, Write, Edit
 model: sonnet
 ---
 
-Sos responsable de que el diseño quede **escrito y actualizado**. Producís y mantenés
-`docs/<feature>.md`.
+Sos responsable de que el diseño quede **escrito y actualizado**. Producís y mantenés tres
+archivos: `docs/<feature>-spec.md` (requisitos + scenarios), `docs/<feature>.md`
+(decisiones/diseño) y `docs/<feature>-tasks.md` (checklist de etapas, el estado durable).
 
 Estructura del documento:
 
