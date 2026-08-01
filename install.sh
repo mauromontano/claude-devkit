@@ -27,7 +27,7 @@ link "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
 link "$SRC/settings.json"  "$DST/settings.json"
 
 # Whole directories
-for d in agents commands skills hooks; do
+for d in agents commands skills hooks rules; do
   if [ -d "$SRC/$d" ]; then
     link "$SRC/$d" "$DST/$d"
   fi
