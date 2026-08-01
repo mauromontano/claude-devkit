@@ -73,9 +73,16 @@ lives in the feature's doc.
 
 ## Git
 
-- Branching, migrations, and delivery strategy live in
-  `~/.claude/skills/feature-workflow/references/git.md`. Read it when planning
-  branches/PRs or anything touching the schema.
+- Commits follow **Conventional Commits**:
+  `<type>(<optional scope>): <imperative summary, lowercase, ≤72 chars>`, body
+  explaining the **why** (the diff already shows the what). Types: `feat`, `fix`,
+  `refactor`, `test`, `docs`, `chore`, `perf`, `build`.
+- Branches: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`, `hotfix/<slug>`;
+  migrations get their own `feat/<slug>-schema` branch/PR, merged first.
+- One commit per stage. Never mix refactor and feature changes in the same commit.
+- PR templates, when to split PRs, and migration strategy:
+  `~/.claude/skills/feature-workflow/references/git.md`. Read it before creating a PR
+  or planning anything that touches the schema.
 
 ## Context management in long tasks
 
