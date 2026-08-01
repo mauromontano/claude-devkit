@@ -1,13 +1,13 @@
 # claude-devkit
 
-Este repo ES el devkit: todo lo que vive en `dot-claude/` se symlinkea a `~/.claude`
-vía `./install.sh` (idempotente). Editá los archivos acá y los cambios se reflejan
-solos en todas las sesiones; en otra máquina alcanza con `git pull`.
+This repo IS the devkit: everything under `dot-claude/` gets symlinked into `~/.claude`
+by `./install.sh` (idempotent). Edit files here and the changes apply to every session
+immediately; on another machine just `git pull`.
 
-- `dot-claude/CLAUDE.md` — la constitución de ingeniería (global, se carga en toda sesión).
-- `dot-claude/commands|agents|skills|hooks` — building blocks del workflow.
-- `docs/` — documentación *de este repo*, no se instala.
+- `dot-claude/CLAUDE.md` — the engineering constitution (global, loaded in every session).
+- `dot-claude/commands|agents|skills|hooks` — the workflow building blocks.
+- `docs/` — documentation about this repo itself; not installed.
 
-Al editar el devkit: mantené el español rioplatense, cuidá el gasto de tokens (todo lo
-que se carga siempre debe ser mínimo; el detalle va en skills con `references/`), y no
-dupliques contenido entre constitución, skills y comandos.
+When editing the devkit: write everything in English, keep always-loaded content minimal
+(details belong in skills under `references/`), and never duplicate content across the
+constitution, skills, and commands.

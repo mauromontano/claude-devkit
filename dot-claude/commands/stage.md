@@ -1,18 +1,18 @@
 ---
-description: Implementa una etapa del plan con TDD (rojo → verde → refactor).
-argument-hint: <número o nombre de la etapa>
+description: Implement one stage of the plan with TDD (red → green → refactor).
+argument-hint: <stage number or name>
 ---
 
-Implementá la etapa: **$ARGUMENTS**
+Implement the stage: **$ARGUMENTS**
 
-Seguí TDD estricto (Fase 3 de `docs/WORKFLOW.md`):
+Follow strict TDD (Phase 3 of `~/.claude/skills/feature-workflow/references/phases.md`):
 
-1. **Rojo** — delegá al subagent `test-writer` para escribir los tests de esta etapa.
-   Confirmá que corren y fallan por la razón correcta.
-2. **Verde** — escribí el código mínimo para que los tests pasen. Nada de más.
-3. **Refactor** — limpiá con los tests como red de seguridad.
-4. **Verificar** — corré el suite de la etapa y mostrá el verde.
+1. **Red** — write this stage's tests first. Confirm they run and fail for the right
+   reason (real assertion failures, not import errors).
+2. **Green** — the minimum code to make them pass. Nothing more.
+3. **Refactor** — clean up with the tests as a safety net.
+4. **Verify** — run the stage's suite and show it green.
 
-No implementes nada fuera del alcance de esta etapa. Cuando esté en verde, corré
-`/review` y después **PARÁ**: mostrame el resumen y esperá mi OK explícito antes de
-tocar la etapa siguiente. No encadenes etapas sin mi aprobación.
+Do not implement anything outside this stage's scope. When it's green, run `/review`
+and then apply the human gate: stop, show the summary, and wait for explicit approval
+before touching the next stage.

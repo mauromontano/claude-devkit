@@ -32,13 +32,13 @@ Este repo empaqueta todo eso como configuración versionable.
 claude-devkit/
 ├── README.md                  # este archivo — el blueprint maestro
 ├── install.sh                 # symlinkea todo a ~/.claude en una máquina nueva
-├── CLAUDE.md                  # constitución de ingeniería (principios globales)
+├── CLAUDE.md                  # about this repo itself (the constitution lives in dot-claude/)
 ├── .gitignore
 ├── docs/
-│   ├── WORKFLOW.md            # el proceso de feature punta a punta, por etapas
 │   ├── ECOSYSTEM.md           # skills / plugins / MCPs recomendados y por qué
 │   └── workflow-diagram.html  # diagrama del flujo (archify) — abrir en el navegador
 └── dot-claude/                # se symlinkea a ~/.claude al correr install.sh
+    ├── CLAUDE.md              # engineering constitution (global, loaded every session)
     ├── settings.json          # hooks (lint/test post-edit), statusline
     ├── agents/                # subagents: planner, reviewer, test-writer, security, docs
     ├── commands/              # /feature, /stage, /review, /diagram, /document
@@ -53,7 +53,9 @@ claude-devkit/
 
 ## Cómo se usa (el ciclo de una feature)
 
-El proceso completo está en [`docs/WORKFLOW.md`](docs/WORKFLOW.md). En una línea por fase:
+El proceso completo está en
+[`dot-claude/skills/feature-workflow/references/phases.md`](dot-claude/skills/feature-workflow/references/phases.md).
+En una línea por fase:
 
 | Fase | Qué pasa | Cómo lo disparo |
 |------|----------|-----------------|

@@ -1,39 +1,26 @@
 ---
 name: feature-workflow
-description: El proceso end-to-end para construir features (brainstorm → plan por capas → docs+diagrama → implementación incremental TDD → review por etapa). Se activa cuando se empieza una feature, módulo o cambio no trivial, o se menciona "plan", "TDD", "por etapas" o "punta a punta".
+description: End-to-end process for building features (brainstorm → layered plan → docs + diagram → incremental TDD → per-stage review). Activates when starting a feature, module, or non-trivial change, or when "plan", "TDD", "stages", or "end-to-end" come up.
 ---
 
-# Proceso de feature punta a punta
+# Feature workflow
 
-Cuando arranques una feature o cambio no trivial, seguí estas fases. Escalá la
-profundidad según la complejidad (trivial / media / alta). Nunca saltes de una etapa de
-implementación a la siguiente sin que la anterior esté en verde y revisada.
+Trigger: `/feature <description>`. Golden rule: **never advance to the next stage until
+the previous one is green and reviewed.** Scale depth to complexity (trivial / medium /
+high). Full per-phase detail lives in `references/phases.md` — read it when running the
+process.
 
-## Fase 0 — Brainstorm
-Entendé antes de actuar. Reformulá el alcance, evaluá complejidad, hacé solo las
-preguntas que cambian el diseño, y esbozá 2-3 enfoques con trade-off si no es obvio.
+0. **Brainstorm** — understand the problem first; ask only the questions that change the
+   design; sketch 2-3 approaches with trade-offs when the decision isn't obvious.
+1. **Plan** — plan mode; **API contract first**; layered design; incremental stages,
+   each committable with an explicit "done" criterion. Delegate to `architecture-planner`.
+2. **Spec + docs + diagram** — `/spec`, `/document`, `/tasks`, `/diagram` (archify).
+   Commit before coding.
+3. **Incremental TDD** — per stage (`/stage`): red → green → refactor → verify.
+4. **Review** — `/review` per stage: `code-reviewer` always, `security-reviewer` when the
+   stage touches auth/payments/sensitive data/external input, `spec-verifier` against the
+   spec. Then the human gate applies (see constitution).
+5. **Close** — update docs, run the full suite, commit/PR, archive the spec to
+   `docs/archive/<feature>-spec.md`.
 
-## Fase 1 — Plan por capas y etapas
-Usá plan mode. Definí el **contrato de API primero**. Diseñá por capas (UI → estado →
-servidor → dominio → datos → jobs). Partí en **etapas incrementales**, cada una
-commiteable y con criterio de "hecho". Para el diseño, delegá a `architecture-planner`.
-
-## Fase 2 — Docs + diagrama
-Generá `docs/<feature>.md` (delegá a `docs-writer`) con problema, decisiones, contrato,
-modelo de datos, etapas y riesgos. Generá un diagrama con **archify** (arquitectura /
-secuencia / flujo según el caso). Commiteá antes de codear.
-
-## Fase 3 — Implementación incremental con TDD
-Por cada etapa: **rojo** (tests primero, delegá a `test-writer`) → **verde** (código
-mínimo) → **refactor** → **verificar** (suite en verde). El hook PostToolUse corre
-lint/format automáticamente tras cada edición.
-
-## Fase 4 — Review por etapa
-Delegá a `code-reviewer` (siempre) y a `security-reviewer` (si toca auth/pagos/datos
-sensibles/input externo). Resolvé los bloqueantes antes de avanzar.
-
-## Fase 5 — Cierre
-Actualizá la doc, regenerá el diagrama si cambió la arquitectura, corré el suite
-completo, y armá el commit/PR explicando el *por qué*.
-
-Ver `docs/WORKFLOW.md` del devkit para el detalle completo.
+Branching, migrations, and delivery strategy: `references/git.md`.

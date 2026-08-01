@@ -1,20 +1,19 @@
 ---
-description: Arranca el flujo de una feature punta a punta (brainstorm → plan → docs → TDD → review).
-argument-hint: <descripción de la feature>
+description: Start the end-to-end feature flow (brainstorm → plan → docs → TDD → review).
+argument-hint: <feature description>
 ---
 
-Voy a construir esta feature: **$ARGUMENTS**
+I'm going to build this feature: **$ARGUMENTS**
 
-Seguí el proceso de `docs/WORKFLOW.md`. No escribas código todavía. Empezá por la **Fase 0
-(brainstorm)**:
+Follow the process in `~/.claude/skills/feature-workflow/references/phases.md`. Do not
+write code yet. Start with **Phase 0 (brainstorm)**:
 
-1. Reformulá la feature con tus palabras y confirmá el alcance.
-2. Evaluá la complejidad (trivial / media / alta) y ajustá la profundidad en consecuencia.
-3. Hacé solo las preguntas que cambian el diseño (transaccionalidad, concurrencia,
-   consumidores del endpoint, qué pasa si falla a la mitad, límites de alcance). No
-   preguntes trivialidades.
-4. Si la decisión de diseño no es obvia, esbozá 2-3 enfoques con su trade-off.
+1. Restate the feature in your own words and confirm the scope.
+2. Assess complexity (trivial / medium / high) and adjust depth accordingly.
+3. Ask only the questions that change the design (transactionality, concurrency,
+   endpoint consumers, what happens on mid-failure, scope limits). No trivia.
+4. If the design decision isn't obvious, sketch 2-3 approaches with their trade-offs.
 
-Cuando tengamos el problema claro, pasá a **plan mode** y delegá el diseño de arquitectura
-al subagent `architecture-planner`. Recién con el plan aprobado seguimos a docs e
-implementación. Una etapa a la vez, en verde y revisada antes de avanzar.
+Once the problem is clear, switch to **plan mode** and delegate the architecture design
+to the `architecture-planner` subagent. Only with the plan approved do we move on to
+docs and implementation. One stage at a time, green and reviewed before advancing.
