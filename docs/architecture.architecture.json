@@ -7,20 +7,22 @@
     "output": "architecture-diagram.html"
   },
   "components": [
-    { "id": "repo", "type": "external", "label": "claude-devkit repo", "sublabel": "dot-claude/ + docs/", "pos": [40, 240], "size": [160, 66], "tag": "you edit here" },
-    { "id": "install", "type": "backend", "label": "install.sh", "sublabel": "ln -sfn, idempotent", "pos": [40, 360], "size": [160, 66] },
+    { "id": "repo", "type": "external", "label": "claude-devkit repo", "sublabel": "dot-claude/ + docs/", "pos": [40, 300], "size": [160, 66], "tag": "you edit here" },
+    { "id": "install", "type": "backend", "label": "install.sh", "sublabel": "symlink + npm + plugins", "pos": [40, 430], "size": [160, 66] },
 
-    { "id": "constitution", "type": "cloud", "label": "CLAUDE.md", "sublabel": "engineering constitution", "pos": [330, 40], "size": [170, 66], "tag": "always loaded" },
-    { "id": "settings", "type": "security", "label": "settings.json", "sublabel": "model · permissions · hooks", "pos": [330, 140], "size": [170, 66] },
-    { "id": "commands", "type": "backend", "label": "commands/ (11)", "sublabel": "/feature /bug /commit /pr ...", "pos": [330, 240], "size": [170, 66] },
-    { "id": "agents", "type": "backend", "label": "agents/ (6)", "sublabel": "planner · reviewers · writers", "pos": [330, 340], "size": [170, 66] },
-    { "id": "skills", "type": "cloud", "label": "skills/ (4)", "sublabel": "feature-workflow + stacks", "pos": [330, 440], "size": [170, 66], "tag": "on demand" },
-    { "id": "hooks", "type": "messagebus", "label": "hooks/ (3)", "sublabel": "post-edit · protect · statusline", "pos": [330, 540], "size": [170, 66] },
+    { "id": "constitution", "type": "cloud", "label": "CLAUDE.md", "sublabel": "engineering constitution", "pos": [330, 40], "size": [190, 62], "tag": "always loaded" },
+    { "id": "settings", "type": "security", "label": "settings.json", "sublabel": "model · permissions · hooks", "pos": [330, 135], "size": [190, 62] },
+    { "id": "commands", "type": "backend", "label": "commands/ (11)", "sublabel": "/feature /bug /commit /pr ...", "pos": [330, 230], "size": [190, 62] },
+    { "id": "agents", "type": "backend", "label": "agents/ (6)", "sublabel": "planner · reviewers · writers", "pos": [330, 325], "size": [190, 62] },
+    { "id": "skills", "type": "cloud", "label": "skills/ (4)", "sublabel": "workflow · stacks · archify", "pos": [330, 420], "size": [190, 62], "tag": "on demand" },
+    { "id": "rules", "type": "cloud", "label": "rules/", "sublabel": "context7 (ctx7 latest docs)", "pos": [330, 515], "size": [190, 62] },
+    { "id": "hooks", "type": "messagebus", "label": "hooks/ (3)", "sublabel": "post-edit · protect · statusline", "pos": [330, 610], "size": [190, 62] },
+    { "id": "plugins", "type": "cloud", "label": "plugins", "sublabel": "code-review · simplifier · frontend", "pos": [330, 705], "size": [190, 62], "tag": "bootstrapped" },
 
-    { "id": "session", "type": "external", "label": "Claude Code session", "sublabel": "any project on this machine", "pos": [620, 280], "size": [180, 110] }
+    { "id": "session", "type": "external", "label": "Claude Code session", "sublabel": "any project on this machine", "pos": [660, 360], "size": [190, 120] }
   ],
   "boundaries": [
-    { "kind": "region", "label": "~/.claude/ — symlinked, inherited by every project", "wraps": ["constitution", "settings", "commands", "agents", "skills", "hooks"] }
+    { "kind": "region", "label": "~/.claude/ — symlinked, inherited by every project", "wraps": ["constitution", "settings", "commands", "agents", "skills", "rules", "hooks", "plugins"] }
   ],
   "connections": [
     { "from": "repo", "to": "install", "fromSide": "bottom", "toSide": "top" },
@@ -28,12 +30,11 @@
     { "from": "constitution", "to": "session", "label": "loaded every session", "variant": "emphasis", "fromSide": "right", "toSide": "top" },
     { "from": "commands", "to": "session", "label": "trigger phases", "fromSide": "right", "toSide": "left" },
     { "from": "commands", "to": "agents", "fromSide": "bottom", "toSide": "top" },
-    { "from": "skills", "to": "session", "label": "load references", "variant": "dashed", "fromSide": "right", "toSide": "bottom" },
     { "from": "settings", "to": "session", "label": "govern model + perms", "variant": "security", "fromSide": "right", "toSide": "top" }
   ],
   "cards": [
     { "dot": "cyan", "title": "Distribution", "items": ["Edit in the repo → git push", "install.sh symlinks dot-claude/ → ~/.claude", "git pull on another machine, no re-copy"] },
-    { "dot": "emerald", "title": "Building blocks", "items": ["Constitution: always-on process principles", "Commands trigger the feature/bug/git flows", "Agents run review/plan in isolated context", "Skills load workflow + stack detail on demand"] },
-    { "dot": "rose", "title": "Guardrails", "items": ["settings.json: opus-4-8 default, baseline permissions", "protect-paths blocks .env / keys", "post-edit runs lint after every edit"] }
+    { "dot": "emerald", "title": "Building blocks", "items": ["Constitution: always-on process principles", "Commands trigger feature/bug/git flows", "Agents run review/plan in isolated context", "Skills (incl. archify) + context7 rule load on demand"] },
+    { "dot": "rose", "title": "Bundled vs bootstrapped", "items": ["Bundled: skills, archify, context7 rule", "Bootstrapped: official plugins via marketplace", "settings.json: opus-4-8, baseline permissions"] }
   ]
 }
