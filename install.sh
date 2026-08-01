@@ -36,6 +36,13 @@ done
 # Execute permission for the hooks
 chmod +x "$SRC"/hooks/*.sh 2>/dev/null || true
 
+# Install archify's optional dependency (ajv, for schema validation).
+# Without npm, archify still renders — it just skips schema validation.
+if [ -d "$SRC/skills/archify" ] && command -v npm >/dev/null 2>&1; then
+  echo "  archify: installing dependencies ..."
+  (cd "$SRC/skills/archify" && npm install --silent) || true
+fi
+
 echo ""
 echo "Done. Verify with:  ls -la $DST"
 echo "Changes made in $REPO apply immediately (they're symlinks)."
