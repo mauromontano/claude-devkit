@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "claude-devkit architecture",
+    "subtitle": "Dotfiles repo symlinked into ~/.claude — building blocks consumed by every Claude Code session",
+    "output": "architecture-diagram.html"
+  },
+  "components": [
+    { "id": "repo", "type": "external", "label": "claude-devkit repo", "sublabel": "dot-claude/ + docs/", "pos": [40, 240], "size": [160, 66], "tag": "you edit here" },
+    { "id": "install", "type": "backend", "label": "install.sh", "sublabel": "ln -sfn, idempotent", "pos": [40, 360], "size": [160, 66] },
+
+    { "id": "constitution", "type": "cloud", "label": "CLAUDE.md", "sublabel": "engineering constitution", "pos": [330, 40], "size": [170, 66], "tag": "always loaded" },
+    { "id": "settings", "type": "security", "label": "settings.json", "sublabel": "model · permissions · hooks", "pos": [330, 140], "size": [170, 66] },
+    { "id": "commands", "type": "backend", "label": "commands/ (11)", "sublabel": "/feature /bug /commit /pr ...", "pos": [330, 240], "size": [170, 66] },
+    { "id": "agents", "type": "backend", "label": "agents/ (6)", "sublabel": "planner · reviewers · writers", "pos": [330, 340], "size": [170, 66] },
+    { "id": "skills", "type": "cloud", "label": "skills/ (4)", "sublabel": "feature-workflow + stacks", "pos": [330, 440], "size": [170, 66], "tag": "on demand" },
+    { "id": "hooks", "type": "messagebus", "label": "hooks/ (3)", "sublabel": "post-edit · protect · statusline", "pos": [330, 540], "size": [170, 66] },
+
+    { "id": "session", "type": "external", "label": "Claude Code session", "sublabel": "any project on this machine", "pos": [620, 280], "size": [180, 110] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "~/.claude/ — symlinked, inherited by every project", "wraps": ["constitution", "settings", "commands", "agents", "skills", "hooks"] }
+  ],
+  "connections": [
+    { "from": "repo", "to": "install", "fromSide": "bottom", "toSide": "top" },
+    { "from": "install", "to": "constitution", "label": "symlink to ~/.claude", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "from": "constitution", "to": "session", "label": "loaded every session", "variant": "emphasis", "fromSide": "right", "toSide": "top" },
+    { "from": "commands", "to": "session", "label": "trigger phases", "fromSide": "right", "toSide": "left" },
+    { "from": "commands", "to": "agents", "fromSide": "bottom", "toSide": "top" },
+    { "from": "skills", "to": "session", "label": "load references", "variant": "dashed", "fromSide": "right", "toSide": "bottom" },
+    { "from": "settings", "to": "session", "label": "govern model + perms", "variant": "security", "fromSide": "right", "toSide": "top" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Distribution", "items": ["Edit in the repo → git push", "install.sh symlinks dot-claude/ → ~/.claude", "git pull on another machine, no re-copy"] },
+    { "dot": "emerald", "title": "Building blocks", "items": ["Constitution: always-on process principles", "Commands trigger the feature/bug/git flows", "Agents run review/plan in isolated context", "Skills load workflow + stack detail on demand"] },
+    { "dot": "rose", "title": "Guardrails", "items": ["settings.json: opus-4-8 default, baseline permissions", "protect-paths blocks .env / keys", "post-edit runs lint after every edit"] }
+  ]
+}
