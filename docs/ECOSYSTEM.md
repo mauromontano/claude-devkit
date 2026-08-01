@@ -1,7 +1,7 @@
 # Ecosystem: skills, plugins, MCPs, and hooks to add
 
 Recommendations to round out the setup, ordered by impact for my stack (Node/Express,
-Next.js/React/TS, Rails, Laravel) and my flow (plan-first, TDD, per-stage review).
+Next.js/React/TS, Laravel) and my flow (plan-first, TDD, per-stage review).
 
 > The Claude Code ecosystem moves fast. Before installing anything, check that it's
 > maintained (last commit, open issues) and try it on a toy project.
@@ -30,7 +30,7 @@ MCPs give the agent access to real tools. The highest-leverage ones for my stack
 
 | MCP | What for | Why it helps me |
 |-----|----------|-----------------|
-| **context7** | Up-to-date library docs | Stops the agent hallucinating Next/React/Rails APIs; brings the real docs for the version. |
+| **context7** | Up-to-date library docs | Stops the agent hallucinating Next/React/Laravel APIs; brings the real docs for the version. |
 | **Playwright MCP** | Driving a real browser | Covers the e2e gap I have today. Critical flows: login, checkout. |
 | **GitHub MCP** | Issues, PRs, code review | Closes the process loop: open PRs, read reviews, iterate without leaving the terminal. |
 | **Postgres/MySQL MCP** | Schema introspection and queries | The agent understands the real data model instead of guessing it. |

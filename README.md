@@ -5,7 +5,7 @@ this repo on any machine, run `./install.sh`, and my whole workflow is ready:
 engineering principles, review subagents, commands, TDD/lint hooks, and an end-to-end,
 staged feature process with documentation and diagrams generated along the way.
 
-> Built for working in Node/Express, Next.js/React/TS, Ruby on Rails, and Laravel, but
+> Built for working in Node/Express, Next.js/React/TS, and Laravel, but
 > the process doesn't depend on the stack: it defines *how* I work, not *with what*.
 
 ---
@@ -43,7 +43,7 @@ claude-devkit/
     ├── agents/                # subagents: planner, code/security reviewers, spec verifier, test/docs writers
     ├── commands/              # /feature /spec /document /tasks /diagram /stage /review /refactor /bug /commit /pr
     ├── hooks/                 # hook scripts (post-edit, protect-paths, statusline)
-    └── skills/                # feature-workflow (+ references/), rails, laravel, node-next
+    └── skills/                # feature-workflow (+ references/), laravel, node-next, archify
 ```
 
 > It's stored as `dot-claude/` (not `.claude/`) because this is a dotfiles repo:
@@ -113,7 +113,7 @@ rules (that codebase's conventions, specific test commands), those go in the pro
 | **Subagents** | Agents with isolated context and instructions | Specialized review, characterization tests, and planning without polluting the main context |
 | **Commands** | Reusable prompts invoked with `/` | Triggering each phase of the process consistently |
 | **Hooks** | Scripts running on agent events | Auto lint/format, protecting files, reinforcing TDD |
-| **Skills** | Progressively loaded capabilities | Workflow + per-stack knowledge on demand (feature-workflow, rails, laravel, node-next) |
+| **Skills** | Progressively loaded capabilities | Workflow + per-stack knowledge + diagrams on demand (feature-workflow, laravel, node-next, archify) |
 
 ---
 

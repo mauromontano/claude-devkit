@@ -40,7 +40,7 @@ the names change, not the structure:
   server-side data layer (validation, secrets/auth) → typed API client speaking the
   contract. Every component handles its 4 states: loading / error / empty / success.
 
-Framework specifics live in the stack skills (rails, laravel, node-next).
+Framework specifics live in the stack skills (laravel, node-next).
 
 ## Contract first
 
