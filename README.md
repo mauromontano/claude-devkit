@@ -36,7 +36,7 @@ claude-devkit/
 ├── .gitignore
 ├── docs/
 │   ├── ECOSYSTEM.md           # recommended skills / plugins / MCPs and why
-│   └── workflow-diagram.html  # flow diagram (archify) — open in the browser
+│   └── workflow.workflow.json # flow diagram source (regenerate HTML with /diagram)
 └── dot-claude/                # symlinked to ~/.claude by install.sh
     ├── CLAUDE.md              # engineering constitution (global, loaded every session)
     ├── settings.json          # hooks (post-edit lint), statusline, model

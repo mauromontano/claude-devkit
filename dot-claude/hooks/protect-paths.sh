@@ -5,7 +5,11 @@
 
 set -euo pipefail
 input="$(cat)"
-file="$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+if command -v jq >/dev/null 2>&1; then
+  file="$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null)"
+else
+  file="$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+fi
 [ -z "${file:-}" ] && exit 0
 
 PROTECTED=(".env" ".env.production" "db/structure.sql" "db/schema.rb" "*.pem" "*.key")

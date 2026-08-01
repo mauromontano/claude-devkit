@@ -8,8 +8,12 @@
 set -euo pipefail
 input="$(cat)"
 
-# file_path from tool_input (Edit/Write/MultiEdit). No jq, to avoid dependencies.
-file="$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+# file_path from tool_input (Edit/Write/MultiEdit). jq when available; sed fallback.
+if command -v jq >/dev/null 2>&1; then
+  file="$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null)"
+else
+  file="$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+fi
 
 [ -z "${file:-}" ] && exit 0
 [ ! -f "$file" ] && exit 0
@@ -39,7 +43,11 @@ esac
 
 if [ -n "$out" ]; then
   # Emit JSON to inject the result as additional context.
-  esc="$(printf '%s' "$out" | tail -30 | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '""')"
+  if command -v jq >/dev/null 2>&1; then
+    esc="$(printf '%s' "$out" | tail -30 | jq -Rs . 2>/dev/null || printf '""')"
+  else
+    esc="$(printf '%s' "$out" | tail -30 | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '""')"
+  fi
   printf '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":%s}}\n' "$esc"
 fi
 
