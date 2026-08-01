@@ -55,7 +55,8 @@ claude-devkit/
 
 ## How it's used (the feature cycle)
 
-The full process lives in
+Day-to-day usage and the full command reference are in
+[`docs/USAGE.md`](docs/USAGE.md); the full phase detail lives in
 [`dot-claude/skills/feature-workflow/references/phases.md`](dot-claude/skills/feature-workflow/references/phases.md).
 One line per phase:
 
