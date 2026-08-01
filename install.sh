@@ -49,7 +49,7 @@ fi
 if command -v claude >/dev/null 2>&1; then
   echo "  plugins: bootstrapping from claude-plugins-official ..."
   claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1 || true
-  for p in superpowers frontend-design code-review code-simplifier; do
+  for p in frontend-design code-review code-simplifier; do
     claude plugin install "$p@claude-plugins-official" >/dev/null 2>&1 || true
   done
 fi
