@@ -43,6 +43,17 @@ if [ -d "$SRC/skills/archify" ] && command -v npm >/dev/null 2>&1; then
   (cd "$SRC/skills/archify" && npm install --silent) || true
 fi
 
+# Bootstrap marketplace plugins (reinstalled from the official marketplace,
+# not vendored — so they keep receiving updates). Edit the list to taste.
+# Guarded: no-ops if the claude CLI isn't on PATH or a plugin is already installed.
+if command -v claude >/dev/null 2>&1; then
+  echo "  plugins: bootstrapping from claude-plugins-official ..."
+  claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1 || true
+  for p in superpowers frontend-design code-review code-simplifier; do
+    claude plugin install "$p@claude-plugins-official" >/dev/null 2>&1 || true
+  done
+fi
+
 echo ""
 echo "Done. Verify with:  ls -la $DST"
 echo "Changes made in $REPO apply immediately (they're symlinks)."

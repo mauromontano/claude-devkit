@@ -82,13 +82,29 @@ cd ~/claude-devkit
 ./install.sh
 ```
 
-`install.sh` symlinks `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `hooks/`, and
-`settings.json` into `~/.claude/`, so **every project** on that machine inherits the
-setup. Edit once in the repo, `git push`, and on the other machine `git pull` — no
-manual copying.
+`install.sh` symlinks `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `hooks/`,
+`rules/`, and `settings.json` into `~/.claude/`, so **every project** on that machine
+inherits the setup. It also runs `npm install` for the bundled **archify** skill (its
+only dependency, `ajv`, is optional) and **bootstraps marketplace plugins** from the
+official marketplace (see below). Edit once in the repo, `git push`, and on the other
+machine `git pull` — no manual copying.
 
 For project-specific configuration, copy what's needed into that repo's `.claude/`
 (see "Global vs project" below).
+
+### Bundled vs bootstrapped
+
+- **Bundled** (vendored in the repo, travel via symlink): the workflow skills, the
+  `archify` diagram skill, and the `context7` docs rule.
+- **Bootstrapped** (reinstalled from the marketplace, not vendored — so they keep
+  getting updates): the official plugins `superpowers`, `frontend-design`,
+  `code-review`, `code-simplifier`. Edit the list near the end of `install.sh` to taste.
+
+> **Note on superpowers:** it's a full development methodology (TDD, plan-first,
+> subagent-driven dev, code review) that overlaps a lot with this devkit's own workflow.
+> It's kept mainly for its complementary subskills (`systematic-debugging`,
+> `using-git-worktrees`, `verification-before-completion`). If its instructions ever
+> conflict with the constitution, `claude plugin disable superpowers`.
 
 ---
 
