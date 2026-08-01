@@ -6,11 +6,16 @@ Next.js/React/TS, Laravel) and my flow (plan-first, TDD, per-stage review).
 > The Claude Code ecosystem moves fast. Before installing anything, check that it's
 > maintained (last commit, open issues) and try it on a toy project.
 
-## What I already have
+## Ships with the devkit
 
-- **superpowers** — marketplace/plugin with skills and workflow. Installed.
-- **context** (docs) and **archify** (diagrams) — skills. Installed.
-- Per-framework/language skills. Installed.
+Installed automatically by `install.sh` on any machine:
+
+- **archify** (diagrams) — bundled skill, vendored in `dot-claude/skills/archify`.
+- **context7** (latest docs via the `ctx7` CLI) — bundled rule in `dot-claude/rules`.
+- **feature-workflow** + per-stack skills (laravel, node-next) — bundled.
+- **superpowers, frontend-design, code-review, code-simplifier** — bootstrapped from the
+  `claude-plugins-official` marketplace (reinstalled, not vendored, so they stay
+  updated). See the note in the README about superpowers' overlap with the workflow.
 
 ## 1. TDD enforcement (most aligned with my process)
 

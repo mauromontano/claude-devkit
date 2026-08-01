@@ -43,6 +43,7 @@ claude-devkit/
     ├── agents/                # subagents: planner, code/security reviewers, spec verifier, test/docs writers
     ├── commands/              # /feature /spec /document /tasks /diagram /stage /review /refactor /bug /commit /pr
     ├── hooks/                 # hook scripts (post-edit, protect-paths, statusline)
+    ├── rules/                 # global rules (context7: latest docs via the ctx7 CLI)
     └── skills/                # feature-workflow (+ references/), laravel, node-next, archify
 ```
 
