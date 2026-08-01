@@ -1,9 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "statusLine": {
-    "type": "command",
-    "command": "$HOME/.claude/hooks/statusline.sh"
-  },
+  "model": "claude-fable-5",
   "hooks": {
     "PostToolUse": [
       {
@@ -27,5 +24,10 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/hooks/statusline.sh"
+  },
+  "tui": "fullscreen"
 }

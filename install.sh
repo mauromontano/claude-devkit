@@ -27,8 +27,10 @@ link "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
 link "$SRC/settings.json"  "$DST/settings.json"
 
 # Carpetas completas
-for d in agents commands skills hooks output-styles; do
-  [ -d "$SRC/$d" ] && link "$SRC/$d" "$DST/$d"
+for d in agents commands skills hooks; do
+  if [ -d "$SRC/$d" ]; then
+    link "$SRC/$d" "$DST/$d"
+  fi
 done
 
 # Permisos de ejecución para los hooks
