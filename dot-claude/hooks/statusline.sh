@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# StatusLine: una línea con rama de git, estado sucio/limpio y modelo.
-# Claude Code pasa contexto de sesión como JSON por stdin.
+# StatusLine: one line with git branch, dirty/clean state, and model.
+# Claude Code passes session context as JSON on stdin.
 set -euo pipefail
 input="$(cat 2>/dev/null || true)"
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# PostToolUse hook: corre lint/format sobre el archivo recién editado.
-# Es INFORMATIVO — nunca bloquea (exit 0 siempre). Devuelve el resultado como
-# additionalContext para que el agente vea los problemas al instante.
+# PostToolUse hook: runs lint/format on the file that was just edited.
+# INFORMATIVE only — never blocks (always exit 0). Returns the result as
+# additionalContext so the agent sees problems immediately.
 #
-# Claude Code pasa el evento como JSON por stdin. Extraemos el path editado.
+# Claude Code passes the event as JSON on stdin. We extract the edited path.
 
 set -euo pipefail
 input="$(cat)"
 
-# file_path del tool_input (Edit/Write/MultiEdit). Sin jq para no depender de nada.
+# file_path from tool_input (Edit/Write/MultiEdit). No jq, to avoid dependencies.
 file="$(printf '%s' "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
 
 [ -z "${file:-}" ] && exit 0
@@ -38,7 +38,7 @@ case "$file" in
 esac
 
 if [ -n "$out" ]; then
-  # Emitimos JSON para inyectar el resultado como contexto adicional.
+  # Emit JSON to inject the result as additional context.
   esc="$(printf '%s' "$out" | tail -30 | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '""')"
   printf '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":%s}}\n' "$esc"
 fi

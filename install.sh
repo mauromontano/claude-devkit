@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Instala el devkit symlinkeando dot-claude/* dentro de ~/.claude.
-# Idempotente: se puede correr varias veces. Hace backup de lo que reemplaza.
+# Installs the devkit by symlinking dot-claude/* into ~/.claude.
+# Idempotent: safe to run multiple times. Backs up whatever it replaces.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,23 +20,23 @@ link() {
   echo "  link:   $to -> $from"
 }
 
-echo "Instalando claude-devkit en $DST ..."
+echo "Installing claude-devkit into $DST ..."
 
-# Archivos sueltos
+# Single files
 link "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
 link "$SRC/settings.json"  "$DST/settings.json"
 
-# Carpetas completas
+# Whole directories
 for d in agents commands skills hooks; do
   if [ -d "$SRC/$d" ]; then
     link "$SRC/$d" "$DST/$d"
   fi
 done
 
-# Permisos de ejecución para los hooks
+# Execute permission for the hooks
 chmod +x "$SRC"/hooks/*.sh 2>/dev/null || true
 
 echo ""
-echo "Listo. Verificá con:  ls -la $DST"
-echo "Los cambios que hagas en $REPO se reflejan solos (son symlinks)."
-echo "Para actualizar en otra máquina:  cd $REPO && git pull"
+echo "Done. Verify with:  ls -la $DST"
+echo "Changes made in $REPO apply immediately (they're symlinks)."
+echo "To update on another machine:  cd $REPO && git pull"

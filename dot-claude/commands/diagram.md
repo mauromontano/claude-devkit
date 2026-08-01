@@ -1,15 +1,15 @@
 ---
-description: Genera un diagrama de la feature con archify (arquitectura / secuencia / flujo).
-argument-hint: [qué diagramar]
+description: Generate a diagram of the feature with archify (architecture / sequence / flow).
+argument-hint: [what to diagram]
 ---
 
-Generá un diagrama para: **$ARGUMENTS**
+Generate a diagram for: **$ARGUMENTS**
 
-Usá la skill **archify**. Elegí el tipo según el caso:
-- **arquitectura** si hay varias piezas/servicios y sus relaciones,
-- **secuencia** si el foco es un flujo de llamadas en el tiempo (ej. pago + webhook),
-- **flujo / estado** si hay un proceso con ramas o una máquina de estados.
+Use the **archify** skill. Pick the type by the case:
+- **architecture** if there are several pieces/services and their relationships,
+- **sequence** if the focus is a call flow over time (e.g. payment + webhook),
+- **flow / state** if there's a branching process or a state machine.
 
-Basate en la doc de diseño (`docs/`) y en el código actual para que el diagrama refleje
-la realidad. Guardá el HTML resultante en `docs/`. Si no hay suficiente contexto,
-preguntá qué parte del sistema querés visualizar antes de generar.
+Base it on the design docs (`docs/`) and the current code so the diagram reflects
+reality. Save the resulting HTML in `docs/`. If there isn't enough context, ask which
+part of the system to visualize before generating.

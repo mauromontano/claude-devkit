@@ -1,74 +1,77 @@
-# Ecosistema: skills, plugins, MCPs y hooks a sumar
+# Ecosystem: skills, plugins, MCPs, and hooks to add
 
-Recomendaciones para completar el setup, ordenadas por impacto para mi stack
-(Node/Express, Next.js/React/TS, Rails) y mi flujo (plan-first, TDD, review por etapa).
+Recommendations to round out the setup, ordered by impact for my stack (Node/Express,
+Next.js/React/TS, Rails, Laravel) and my flow (plan-first, TDD, per-stage review).
 
-> El ecosistema de Claude Code se mueve rápido. Antes de instalar algo, verificá que esté
-> mantenido (último commit, issues abiertos) y probalo en un proyecto de juguete.
+> The Claude Code ecosystem moves fast. Before installing anything, check that it's
+> maintained (last commit, open issues) and try it on a toy project.
 
-## Lo que ya tengo
+## What I already have
 
-- **superpowers** — marketplace/plugin con skills y workflow. Ya instalado.
-- **context** (docs) y **archify** (diagramas) — skills. Ya instaladas.
-- Skills por framework/lenguaje. Ya instaladas.
+- **superpowers** — marketplace/plugin with skills and workflow. Installed.
+- **context** (docs) and **archify** (diagrams) — skills. Installed.
+- Per-framework/language skills. Installed.
 
-## 1. Enforcement de TDD (lo más alineado con mi proceso)
+## 1. TDD enforcement (most aligned with my process)
 
-- **tdd-guard** — hook que bloquea escribir implementación si no hay un test que falle
-  primero. Es exactamente la Fase 3 del workflow, automatizada a nivel hook (no depende
-  de que yo o el agente "se acuerden"). Soporta varios runners (Jest/Vitest, RSpec, etc.).
-  → El candidato más fuerte para sumar. Verificá el estado del repo antes de adoptarlo.
+- **tdd-guard** — a hook that blocks writing implementation unless a failing test
+  exists first. It's exactly Phase 3 of the workflow, automated at the hook level (it
+  doesn't depend on anyone "remembering"). Supports several runners (Jest/Vitest,
+  RSpec, etc.).
+  → The strongest candidate to add. Check the repo's health before adopting.
 
-Alternativa casera si no querés una dependencia: un hook `PreToolUse` propio que, cuando
-se edita un archivo de código no-test, chequee que exista y falle su test asociado. Más
-frágil, pero cero dependencias.
+Homemade alternative if you don't want a dependency: a custom `PreToolUse` hook that,
+when a non-test code file is edited, checks that its associated test exists and fails.
+More fragile, but zero dependencies.
 
-## 2. MCP servers a conectar
+## 2. MCP servers to connect
 
-Los MCP le dan al agente acceso a herramientas reales. Los que más rinden para mi stack:
+MCPs give the agent access to real tools. The highest-leverage ones for my stack:
 
-| MCP | Para qué | Por qué me sirve |
-|-----|----------|------------------|
-| **context7** | Docs actualizadas de librerías | Evita que el agente alucine APIs de Next/React/Rails; trae la doc real de la versión. |
-| **Playwright MCP** | Manejar un browser real | Tapa el hueco de e2e que hoy no tengo. Flujos críticos: login, checkout. |
-| **GitHub MCP** | Issues, PRs, code review | Cierra el loop del proceso: abrir PR, leer reviews, iterar sin salir de la terminal. |
-| **Postgres/MySQL MCP** | Introspección de schema y queries | El agente entiende el modelo de datos real en vez de adivinarlo. |
-| **Sentry / APM MCP** | Errores de producción | Traer un stack trace real al contexto para debuggear. |
+| MCP | What for | Why it helps me |
+|-----|----------|-----------------|
+| **context7** | Up-to-date library docs | Stops the agent hallucinating Next/React/Rails APIs; brings the real docs for the version. |
+| **Playwright MCP** | Driving a real browser | Covers the e2e gap I have today. Critical flows: login, checkout. |
+| **GitHub MCP** | Issues, PRs, code review | Closes the process loop: open PRs, read reviews, iterate without leaving the terminal. |
+| **Postgres/MySQL MCP** | Schema introspection and queries | The agent understands the real data model instead of guessing it. |
+| **Sentry / APM MCP** | Production errors | Bring a real stack trace into context for debugging. |
 
-Empezá por **context7** y **Playwright**: son los que más mueven la aguja para mi combo
-front-heavy + hueco de e2e.
+Start with **context7** and **Playwright**: they move the needle most for my
+front-heavy combo + e2e gap.
 
-## 3. Subagents que ya incluye este devkit
+## 3. Subagents already included in this devkit
 
-`architecture-planner`, `code-reviewer`, `test-writer`, `security-reviewer`, `docs-writer`.
-Cubren planning, TDD y review por etapa sin ensuciar el contexto principal. Si aparece una
-necesidad recurrente (ej. un `migration-reviewer` para cambios de schema, o un
-`perf-auditor`), se agrega un `.md` más en `dot-claude/agents/`.
+`architecture-planner`, `code-reviewer`, `test-writer` (characterization tests),
+`security-reviewer`, `docs-writer`, `spec-verifier`. They cover planning, refactor
+safety nets, and per-stage review without polluting the main context. If a recurring
+need appears (e.g. a `migration-reviewer` for schema changes, or a `perf-auditor`),
+add one more `.md` in `dot-claude/agents/`.
 
-## 4. Plugins/marketplaces a mirar
+## 4. Plugins/marketplaces to watch
 
-- **superpowers** (ya lo tengo) — mantenelo actualizado; suele traer skills y comandos nuevos.
-- Listas tipo **"awesome-claude-code"** — buen radar de skills/plugins/hooks de la
-  comunidad. Útil para descubrir, no para instalar a ciegas.
-- **Mi propio marketplace** — cuando este devkit madure, puedo empaquetarlo como plugin y
-  publicar un `marketplace.json` en un repo privado. Así lo instalo con `/plugin` en vez de
-  symlinks, y puedo versionarlo. Es el paso natural después de los dotfiles.
+- **superpowers** (already have it) — keep it updated; it often ships new skills and
+  commands.
+- **"awesome-claude-code"**-style lists — a good radar for community
+  skills/plugins/hooks. Useful for discovery, not for blind installs.
+- **My own marketplace** — once this devkit matures, package it as a plugin and
+  publish a `marketplace.json` in a private repo. Install with `/plugin` instead of
+  symlinks, with versioning. The natural step after dotfiles.
 
-## 5. Hooks adicionales a considerar
+## 5. Additional hooks to consider
 
-- **PostToolUse (ya incluido)** — lint/format tras cada edición.
-- **PreToolUse protect-paths (ya incluido)** — bloquea editar `.env`, schema, claves.
-- **Stop / SubagentStop** — correr el suite completo cuando el agente "termina", para que
-  no cierre una etapa en rojo.
-- **SessionStart** — cargar contexto del proyecto (rama actual, últimos cambios) al abrir.
+- **PostToolUse (included)** — lint/format after every edit.
+- **PreToolUse protect-paths (included)** — blocks editing `.env`, schema, keys.
+- **Stop / SubagentStop** — run the full suite when the agent "finishes", so it never
+  closes a stage in red.
+- **SessionStart** — load project context (current branch, recent changes) on open.
 
-## Orden de adopción sugerido
+## Suggested adoption order
 
-1. Usar este devkit tal cual (agents + commands + hooks) en un proyecto real una semana.
-2. Sumar **context7** MCP.
-3. Sumar **tdd-guard** (o el hook casero de TDD).
-4. Sumar **Playwright MCP** para e2e de los flujos críticos.
-5. Empaquetar todo como plugin + marketplace privado cuando esté estable.
+1. Use this devkit as-is (agents + commands + hooks) on a real project for a week.
+2. Add the **context7** MCP.
+3. Add **tdd-guard** (or the homemade TDD hook).
+4. Add **Playwright MCP** for e2e on critical flows.
+5. Package everything as a plugin + private marketplace once it's stable.
 
-No instales todo de una: cada pieza cambia cómo trabajás, y conviene sentir el efecto de
-una antes de sumar la siguiente.
+Don't install everything at once: each piece changes how you work, and it's worth
+feeling the effect of one before adding the next.

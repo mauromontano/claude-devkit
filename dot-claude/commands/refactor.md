@@ -1,43 +1,46 @@
 ---
-description: Refactor seguro sobre código existente (entender → red de tests → pasos chiquitos → verificar comportamiento).
-argument-hint: <qué refactorizar / archivo>
+description: Safe refactor of existing code (understand → test net → tiny steps → verify behavior).
+argument-hint: <what to refactor / file>
 ---
 
-Vamos a refactorizar: **$ARGUMENTS**. Regla absoluta: **no cambiar el comportamiento
-observable**. Refactor y cambio de funcionalidad son cosas separadas (los "dos sombreros").
+We're refactoring: **$ARGUMENTS**. Absolute rule: **no observable behavior changes**.
+Refactoring and feature changes are separate things (the "two hats").
 
-Seguí estas fases y **pará entre cada una esperando mi OK**. Un movimiento por vez; yo
-reviso cada diff.
+Follow these phases and **stop between each one waiting for my OK**. One move at a
+time; I review every diff.
 
-Apoyate en el resto del setup cuando sume (sin pedir permiso para lo obvio):
-- La **skill del lenguaje/framework** que corresponda al stack del proyecto.
-- El subagente **`test-writer`** para escribir los characterization tests de la Fase 2.
-- Los subagentes **`code-reviewer`** y **`spec-verifier`** en la Fase 4, para confirmar
-  calidad y que el comportamiento no cambió.
-- **archify** si un diagrama antes/después de la estructura ayuda a explicar el refactor.
-- Una skill de **docs** si necesitás la API real de una librería.
-Igual: el control es mío. Nada de delegar el refactor entero a un subagente; los usás como
-herramientas puntuales, no para saltearte los pasos chiquitos.
+Lean on the rest of the setup when it helps (without asking permission for the obvious):
+- The **language/framework skill** matching the project's stack.
+- The **`test-writer`** subagent to write the characterization tests of Phase 2.
+- The **`code-reviewer`** and **`spec-verifier`** subagents in Phase 4, to confirm
+  quality and that behavior didn't change.
+- **archify** if a before/after diagram of the structure helps explain the refactor.
+- A **docs** skill if you need a library's real API.
+Still: I'm in control. Never delegate the whole refactor to a subagent; use them as
+targeted tools, not to skip the tiny steps.
 
-## Fase 1 — Entender (sin tocar código)
-- Leé el código objetivo y sus tests. Explicame qué hace y qué comportamiento cubren los tests.
-- Listá los code smells (función larga, condicional por tipo, cálculo mezclado con formato, temporales).
+## Phase 1 — Understand (no code changes)
+- Read the target code and its tests. Explain what it does and what behavior the tests
+  cover.
+- List the code smells (long function, type-based conditional, computation mixed with
+  formatting, temps).
 
-## Fase 2 — Asegurar la red
-- Corré los tests (y la cobertura, si el proyecto la tiene). Identificá qué casos **no** están cubiertos.
-- Si falta cobertura, agregá **characterization tests**: fijan el comportamiento ACTUAL
-  (self-checking). No toques los tests existentes que ya pinnean comportamiento.
+## Phase 2 — Secure the net
+- Run the tests (and coverage, if the project has it). Identify which cases are **not**
+  covered.
+- If coverage is missing, add **characterization tests**: they pin CURRENT behavior
+  (self-checking). Don't touch existing tests that already pin behavior.
 
-## Fase 3 — Refactor en pasos chiquitos
-- **Un movimiento de refactor por vez** y nombralo (Extract Function, Replace Temp with Query,
-  Split Loop, Split Phase, Replace Conditional with Polymorphism, etc.).
-- Después de **cada** paso: corré los tests (tienen que quedar verdes) y proponé un commit.
-  Si algo se pone rojo, revertí ese paso y avisá.
-- Nunca mezcles un refactor con un cambio de comportamiento en el mismo paso.
+## Phase 3 — Refactor in tiny steps
+- **One refactor move at a time**, and name it (Extract Function, Replace Temp with
+  Query, Split Loop, Split Phase, Replace Conditional with Polymorphism, etc.).
+- After **every** step: run the tests (they must stay green) and propose a commit.
+  If something goes red, revert that step and say so.
+- Never mix a refactor with a behavior change in the same step.
 
-## Fase 4 — Verificar
-- Confirmá que **todos** los tests siguen verdes y que el comportamiento observable no cambió.
-- Corré análisis estático y estilo al final (no en cada paso).
+## Phase 4 — Verify
+- Confirm **all** tests are still green and observable behavior didn't change.
+- Run static analysis and style at the end (not on every step).
 
-Si al final hay que **agregar** una feature nueva sobre el código ya limpio, ahí sí cambiamos
-de sombrero: eso va con su propio test (rojo → verde), separado del refactor.
+If a new feature needs to be **added** on top of the now-clean code, that's the hat
+switch: it gets its own test (red → green), separate from the refactor.

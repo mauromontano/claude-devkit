@@ -1,24 +1,24 @@
 ---
-description: Genera o actualiza el checklist de etapas (estado durable de la feature).
-argument-hint: [nombre de la feature]
+description: Generate or update the stage checklist (the feature's durable state).
+argument-hint: [feature name]
 ---
 
-Generá o actualizá `docs/$ARGUMENTS-tasks.md`: el **checklist de etapas** del plan. Es el
-estado durable de la feature — la fuente de verdad de qué falta.
+Generate or update `docs/$ARGUMENTS-tasks.md`: the plan's **stage checklist**. It's the
+feature's durable state — the source of truth for what's left.
 
-Formato:
+Format:
 
 ```markdown
-# Tareas — <feature>
+# Tasks — <feature>
 
-- [ ] Etapa 1: <qué> — criterio de hecho: <...>
-- [ ] Etapa 2: <qué> — criterio de hecho: <...>
-- [ ] Etapa 3: <qué> — criterio de hecho: <...>
+- [ ] Stage 1: <what> — done criterion: <...>
+- [ ] Stage 2: <what> — done criterion: <...>
+- [ ] Stage 3: <what> — done criterion: <...>
 ```
 
-Reglas:
-- Una casilla por etapa, con su criterio de "hecho".
-- Al cerrar cada etapa (después del review + verify), **tildá la casilla** y anotá el
-  commit/branch si aplica.
-- Este archivo es lo primero que se lee al retomar en una ventana nueva: dice exactamente
-  en qué etapa estás. Mantenelo siempre al día.
+Rules:
+- One checkbox per stage, with its "done" criterion.
+- When closing each stage (after review + verify), **tick the box** and note the
+  commit/branch if applicable.
+- This file is the first thing read when resuming in a new window: it says exactly
+  which stage you're on. Keep it always up to date.

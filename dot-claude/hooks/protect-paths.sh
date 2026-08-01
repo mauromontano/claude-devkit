@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# PreToolUse hook: bloquea ediciones a archivos sensibles.
-# Exit 2 => bloquea la acción y devuelve el motivo al agente por stderr.
-# Ajustá la lista PROTECTED según el proyecto.
+# PreToolUse hook: blocks edits to sensitive files.
+# Exit 2 => blocks the action and returns the reason to the agent via stderr.
+# Adjust the PROTECTED list per project.
 
 set -euo pipefail
 input="$(cat)"
@@ -14,7 +14,7 @@ base="$(basename "$file")"
 for pat in "${PROTECTED[@]}"; do
   case "$base" in
     $pat)
-      echo "Bloqueado: '$file' es un archivo protegido. Editalo a mano si es intencional, o ajustá dot-claude/hooks/protect-paths.sh." >&2
+      echo "Blocked: '$file' is a protected file. Edit it by hand if intentional, or adjust dot-claude/hooks/protect-paths.sh." >&2
       exit 2
       ;;
   esac
