@@ -1,119 +1,93 @@
-# Constitución de ingeniería
+# Engineering constitution
 
-Instrucciones globales para trabajar conmigo en cualquier proyecto. Son principios de
-*proceso*, no de un stack puntual. Si el repo tiene su propio `CLAUDE.md`, ese manda
-sobre lo específico; esto queda como base.
+Global instructions for working with me on any project. These are *process* principles,
+not stack-specific ones. If the repo has its own `CLAUDE.md`, it wins on specifics;
+this remains the baseline.
 
-## Cómo trabajás conmigo
+## How you work with me
 
-- **Entendé antes de actuar.** Ante una tarea no trivial, primero clarificá alcance,
-  supuestos y casos borde. Si algo es ambiguo y cambia el diseño, preguntá. No adivines
-  requisitos importantes.
-- **Planificá antes de escribir.** Para cualquier cosa con más de ~2 archivos o una
-  decisión de diseño, usá plan mode y proponé un plan por etapas antes de tocar código.
-- **Incremental, nunca big-bang.** Dividí el trabajo en etapas chicas y revisables.
-  Cada etapa debe compilar, pasar tests y ser un punto de commit válido.
-- **Mostrá el trade-off.** Cuando elijas un enfoque, nombrá la alternativa que
-  descartaste y por qué. Un buen diseño se defiende explicando qué *no* se hizo.
-- **Sé honesto con la incertidumbre.** Si no sabés algo o no lo puedo verificar,
-  decilo. Preferí "no estoy seguro, lo verifico" antes que afirmar de más.
+- **Understand before acting.** For any non-trivial task, clarify scope, assumptions,
+  and edge cases first. If something ambiguous changes the design, ask. Don't guess
+  important requirements.
+- **Plan before writing.** For anything touching more than ~2 files or involving a
+  design decision, use plan mode and propose a staged plan before touching code.
+- **Incremental, never big-bang.** Split work into small, reviewable stages. Each stage
+  must compile, pass tests, and be a valid commit point.
+- **Show the trade-off.** When choosing an approach, name the alternative you discarded
+  and why. Good design defends itself by explaining what was *not* done.
+- **Be honest about uncertainty.** Prefer "I'm not sure, let me verify" over
+  overclaiming.
 
-## TDD por defecto
+## TDD by default
 
-- Escribí el test **primero**. Rojo → código mínimo → verde → refactor.
-- No implementes lógica sin un test que la cubra. Los casos borde y de error también
-  van testeados, no solo el happy path.
-- Antes de dar una etapa por terminada, corré el suite y mostrá que está en verde.
-- Si un cambio no es testeable, eso es señal de que el diseño necesita ajustarse.
+- Write the test **first**. Red → minimal code → green → refactor.
+- No logic without a covering test. Edge and error cases get tested too, not just the
+  happy path.
+- Before calling a stage done, run the suite and show it green.
+- If a change isn't testable, that's a signal the design needs adjusting.
 
-## Arquitectura: capas con responsabilidades claras
+## Architecture: layers with clear responsibilities
 
-Pensá toda feature como capas con un **contrato de API en el medio** que separa front
-de back, para que ambos avancen en paralelo sin bloquearse.
+Think of every feature as layers with an **API contract in the middle** separating
+front from back, so both move in parallel. The pattern is the same in any framework —
+the names change, not the structure:
 
-**Front (Next.js / React):**
-1. Componente UI — server component por default; `'use client'` solo si hay interactividad.
-2. Estado — cliente (Zustand/useState) vs server-state (TanStack Query). Cada uno a lo suyo.
-3. Capa de datos server-side — validación con Zod, manejo de lo sensible (tokens/auth).
-4. Transporte — cliente de API tipado que habla el contrato.
-5. Todo componente con sus 4 estados: loading / error / vacío / éxito.
+- **Back:** route → thin controller (receive, authorize, delegate — no business logic)
+  → validation → service objects (one responsibility each) → model/ORM (multi-table
+  writes inside a transaction) → serializer → background jobs for heavy or deferred
+  work, never in the request.
+- **Front:** UI component → state (client state vs server-state, each on its own) →
+  server-side data layer (validation, secrets/auth) → typed API client speaking the
+  contract. Every component handles its 4 states: loading / error / empty / success.
 
-**Back (Rails / Express / el que sea):**
-1. Ruta → controller **fino** (recibe, autoriza, delega; sin lógica de negocio).
-2. Autorización antes de tocar nada (policies / middleware).
-3. Lógica de negocio en **service objects** (una responsabilidad por servicio).
-4. Persistencia con validaciones; operaciones multi-tabla dentro de una **transacción**.
-5. Serialización con formato consistente.
-6. Trabajo pesado o diferido → **jobs en background**, nunca en el request.
+Framework specifics live in the stack skills (rails, laravel, node-next).
 
-**El patrón es el mismo en cualquier framework:** controller fino → validación →
-service → modelo/ORM → serializer → jobs. Cambia el nombre, no la estructura.
+## Contract first
 
-## Contrato primero
+Define the endpoint shape (request/response) and the data model **before**
+implementing. With the contract fixed, back and front move in parallel. The contract
+lives in the feature's doc.
 
-Definí la forma del endpoint (request/response) y el modelo de datos **antes** de
-implementar. Con el contrato fijo, back y front avanzan en paralelo. El contrato vive
-en la doc de la feature.
+## Docs and diagrams are part of the work
 
-## Documentación y diagramas como parte del trabajo
+- Every non-trivial feature gets a `docs/<feature>.md`: problem, decisions, API
+  contract, data model, plan stages. Updated as each stage closes, not at the end.
+- Anything with several pieces or flows gets an **archify** diagram (architecture,
+  sequence, or flow). The diagram is part of the deliverable, not an extra.
 
-- Cada feature no trivial genera un `docs/<feature>.md` con: problema, decisiones,
-  contrato de API, modelo de datos y las etapas del plan.
-- Para algo con varias piezas o flujos, generá un diagrama con **archify** (arquitectura,
-  secuencia o flujo). El diagrama es parte del entregable, no un extra.
-- La doc se actualiza al cerrar cada etapa, no al final de todo.
+## Quality and security
 
-## Calidad y seguridad
-
-- Cada etapa pasa por el subagent `code-reviewer` antes de avanzar.
-- Features que tocan auth, pagos, datos sensibles o input externo → también
+- Every stage goes through the `code-reviewer` subagent before advancing. Features
+  touching auth, payments, sensitive data, or external input also go through
   `security-reviewer`.
-- Nada de secretos hardcodeados. Input externo siempre validado. Queries siempre
-  parametrizadas.
-- Antes de un commit/PR: lint limpio, tests en verde, doc actualizada.
+- No hardcoded secrets. External input always validated. Queries always parameterized.
+- Before a commit/PR: clean lint, green tests, updated docs.
 
-## Gate humano por etapa (importante)
+## Human gate per stage (important)
 
-- Al terminar cada etapa, **PARÁ**. Mostrame un resumen (qué cambió, tests en verde,
-  hallazgos del review) y **esperá mi OK explícito** antes de arrancar la siguiente.
-- No encadenes varias etapas sin mi aprobación. Yo reviso, apruebo, y recién ahí seguís.
-- Si un hallazgo del review cambia el diseño, no lo arregles a lo bruto: proponé el
-  ajuste y esperá mi confirmación.
+- When a stage ends, **STOP**. Show me a summary (what changed, green tests, review
+  findings) and **wait for my explicit OK** before starting the next one.
+- Never chain stages without my approval. I review, I approve, then you continue.
+- If a review finding changes the design, don't brute-force the fix: propose the
+  adjustment and wait for my confirmation.
 
-## Estrategia de branches y migraciones
+## Git
 
-- Si en el plan detectás que la feature es grande, proponé **partirla en varios
-  branches/PRs** con un orden de merge claro, en vez de un PR gigante.
-- Las **migraciones y cambios de schema van en su propio branch/PR**, mergeado y
-  desplegado **antes** que el código que los usa. Nunca mezcles migración pesada con
-  lógica de feature en el mismo PR.
-- Cambios que se pueden desplegar y revertir de forma independiente = branches
-  separados. Decilo en la fase de plan, no a mitad de la implementación.
+- Branching, migrations, and delivery strategy live in
+  `~/.claude/skills/feature-workflow/references/git.md`. Read it when planning
+  branches/PRs or anything touching the schema.
 
-## Manejo del contexto en tareas largas
+## Context management in long tasks
 
-- El estado vive en `docs/<feature>.md` (plan + checklist de etapas con su estado), no en
-  tu memoria de contexto. Si hay que empezar una sesión nueva, leé ese doc y retomá.
-- Delegá el trabajo ruidoso (leer muchos archivos, correr suites, reviews) a subagents
-  para no llenar el contexto principal.
-- Commit por etapa: el historial de git es estado recuperable.
-- Si el contexto se llena, sugerí `/compact`; entre features, `/clear`.
+- State lives in `docs/<feature>.md` (plan + stage checklist), not in your context
+  memory. A new session reads that doc and resumes.
+- Delegate noisy work (reading many files, running suites, reviews) to subagents to
+  keep the main context light.
+- Commit per stage: git history is recoverable state.
+- Suggest `/compact` when context fills up; `/clear` between features.
 
-## Estilo de comunicación conmigo
+## Communication style
 
-- Directo y conciso. Sin relleno ni disculpas de más.
-- Cuando termines una etapa, resumí en 2-3 líneas qué cambió y qué sigue.
-- Mostrá diffs y resultados de tests; no me pidas que confíe, mostrame la evidencia.
-
-## Notas por stack
-
-- **Node/Express:** servicios por dominio, validación con Zod, jobs con Bull/BullMQ,
-  tests con Jest. Errores con un handler central, no try/catch disperso.
-- **Next.js/React/TS:** App Router, server components por default, TanStack Query para
-  server-state, Zustand para UI-state, patrón container/presentational.
-- **Ruby on Rails:** controllers finos, Pundit para autorización, service objects,
-  serializers, Sidekiq para jobs, RSpec para tests, RuboCop + Brakeman en CI.
-- **Laravel / PHP:** el mapa es idéntico — controller fino → Form Request (validación) →
-  service → Eloquent (modelo) → API Resource (serializer) → Queue/Jobs. TDD con Pest o
-  PHPUnit, lint con Pint, análisis estático con Larastan/PHPStan, autorización con
-  Policies/Gates. Conceptos iguales a Rails; me pongo productivo rápido.
+- Direct and concise. No filler, no excess apologies.
+- When a stage ends, summarize in 2-3 lines what changed and what's next.
+- Show diffs and test results — don't ask me to trust, show me the evidence.

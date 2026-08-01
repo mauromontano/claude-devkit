@@ -1,29 +1,26 @@
 ---
-description: Genera el spec de la feature con requisitos y scenarios de aceptación (Given/When/Then).
-argument-hint: [nombre de la feature]
+description: Generate the feature spec with requirements and acceptance scenarios (Given/When/Then).
+argument-hint: [feature name]
 ---
 
-Generá o actualizá `docs/$ARGUMENTS-spec.md` con el spec de la feature. Delegá a
-`docs-writer` si conviene. Estructura:
+Generate or update `docs/$ARGUMENTS-spec.md` with the feature spec. Delegate to
+`docs-writer` if convenient. Structure:
 
-## Requisitos
-Lista de lo que la feature tiene que hacer, en lenguaje de negocio (no de implementación).
+## Requirements
+What the feature must do, in business language (not implementation language).
 
-## Scenarios de aceptación
-Uno por comportamiento observable, en formato **Given / When / Then**. Cubrí el happy
-path, los bordes y los casos de error. Ejemplo:
+## Acceptance scenarios
+One per observable behavior, in **Given / When / Then** format. Cover the happy path,
+the edges, and the error cases. Shape:
 
-- **Scenario: giro dentro del disponible**
-  - Given una línea con disponible 1000
-  - When se registra un giro de 400
-  - Then el giro queda en el ledger y el disponible pasa a 600
+- **Scenario: <observable behavior>**
+  - Given <initial state>
+  - When <action>
+  - Then <verifiable outcome, including the error/rejection cases>
 
-- **Scenario: giro que excede el disponible**
-  - Given una línea con disponible 300
-  - When se registra un giro de 500
-  - Then se rechaza con 422 y el ledger no cambia
-
-Reglas:
-- Cada scenario tiene que ser **objetivamente verificable** — es, básicamente, un test.
-- No metas detalles de implementación (ni tablas, ni clases): eso va en `docs/<feature>.md`.
-- Estos scenarios son lo que después valida el subagent `spec-verifier` contra el código.
+Rules:
+- Every scenario must be **objectively verifiable** — it is, essentially, a test.
+- No implementation details (no tables, no classes): those belong in
+  `docs/<feature>.md`.
+- These scenarios are what the `spec-verifier` subagent later validates against the
+  code.
