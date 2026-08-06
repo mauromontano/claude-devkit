@@ -12,7 +12,7 @@
 
     { "id": "constitution", "type": "cloud", "label": "CLAUDE.md", "sublabel": "engineering constitution", "pos": [330, 40], "size": [190, 62], "tag": "always loaded" },
     { "id": "settings", "type": "security", "label": "settings.json", "sublabel": "model · permissions · hooks", "pos": [330, 135], "size": [190, 62] },
-    { "id": "commands", "type": "backend", "label": "commands/ (11)", "sublabel": "/feature /bug /commit /pr ...", "pos": [330, 230], "size": [190, 62] },
+    { "id": "commands", "type": "backend", "label": "commands/ (13)", "sublabel": "/feature /task /onboard /bug ...", "pos": [330, 230], "size": [190, 62] },
     { "id": "agents", "type": "backend", "label": "agents/ (6)", "sublabel": "planner · reviewers · writers", "pos": [330, 325], "size": [190, 62] },
     { "id": "skills", "type": "cloud", "label": "skills/ (4)", "sublabel": "workflow · stacks · archify", "pos": [330, 420], "size": [190, 62], "tag": "on demand" },
     { "id": "rules", "type": "cloud", "label": "rules/", "sublabel": "context7 (ctx7 latest docs)", "pos": [330, 515], "size": [190, 62] },

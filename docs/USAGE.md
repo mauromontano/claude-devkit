@@ -29,10 +29,15 @@ State lives on disk (`docs/<feature>-spec.md`, `docs/<feature>.md`,
 ## Which command when
 
 - **New feature or capability** → `/feature` (full loop above).
+- **A change, update, or maintenance task** (config tweak, dependency bump, small
+  behavior update) → `/task`: the middle path. It sizes the item and scales the depth,
+  routing to `/feature`, `/bug`, or `/refactor` if it turns out to be one of those.
 - **Something is broken** → `/bug`: reproduce → red test that captures it → root cause →
   minimal fix → green suite. No design phase.
 - **Improve existing code without changing behavior** → `/refactor`: understand → test
   net → tiny steps → verify. The "two hats" — never mix a refactor with a feature.
+- **Landing on an unfamiliar project** → `/onboard`: inspects the repo and writes an HTML
+  overview + architecture diagram so you can get up to speed fast.
 - **Wrap up** → `/commit` (conventional message) and `/pr` (PR from the docs).
 
 ## Command reference
@@ -40,6 +45,8 @@ State lives on disk (`docs/<feature>-spec.md`, `docs/<feature>.md`,
 | Command | What it does | When |
 |---------|--------------|------|
 | `/feature <desc>` | Starts the end-to-end feature loop at brainstorm | New, non-trivial work |
+| `/task <desc>` | Sizes a change and scales the depth; routes to feature/bug/refactor | Updates, changes, maintenance |
+| `/onboard [path]` | Inspects a project → HTML overview + architecture diagram | Landing on an unfamiliar repo |
 | `/spec [name]` | Writes requirements + Given/When/Then acceptance scenarios | Phase 2, before coding |
 | `/document [name]` | Writes/updates the design doc (decisions, contract, data model) | Phase 2 and on close |
 | `/tasks [name]` | Writes/updates the stage checklist (durable state) | Phase 2, ticked per stage |
