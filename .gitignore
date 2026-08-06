@@ -11,6 +11,9 @@ node_modules/
 # Generated diagram HTML — regenerate from the .json source with archify
 docs/*-diagram.html
 
+# Local-only reference guides (kept on disk, not in the repo)
+docs/claude-engineering-layers.html
+
 # OS / editor noise
 .DS_Store
 *.swp
