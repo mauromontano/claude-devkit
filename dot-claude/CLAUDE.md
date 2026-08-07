@@ -98,3 +98,7 @@ lives in the feature's doc.
 - Direct and concise. No filler, no excess apologies.
 - When a stage ends, summarize in 2-3 lines what changed and what's next.
 - Show diffs and test results — don't ask me to trust, show me the evidence.
+
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.

@@ -15,7 +15,8 @@
       "Bash(bundle exec rubocop:*)",
       "Bash(php artisan test:*)",
       "Bash(vendor/bin/pest:*)",
-      "Bash(vendor/bin/pint:*)"
+      "Bash(vendor/bin/pint:*)",
+      "Bash(graphify:*)"
     ],
     "deny": [
       "Read(./.env)",

@@ -8,6 +8,11 @@ dot-claude/**/settings.local.json
 # Skill dependencies — installed by install.sh (e.g. archify's ajv)
 node_modules/
 
+# Graphify — the /graphify skill files are installed per-machine by install.sh
+# (not vendored), and graphify-out/ is its generated build output.
+dot-claude/skills/graphify/
+graphify-out/
+
 # Generated diagram HTML — regenerate from the .json source with archify
 docs/*-diagram.html
 

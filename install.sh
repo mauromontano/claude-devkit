@@ -54,6 +54,26 @@ if command -v claude >/dev/null 2>&1; then
   done
 fi
 
+# Bootstrap graphify (code knowledge graph) — installed per machine, not vendored.
+# Optional: no-ops if no Python installer is available. The /graphify skill files
+# land in ~/.claude/skills/graphify (gitignored); reinstalls are idempotent.
+export PATH="$HOME/.local/bin:$PATH"  # where uv/pipx place the graphify binary
+if ! command -v graphify >/dev/null 2>&1; then
+  if command -v uv >/dev/null 2>&1; then
+    echo "  graphify: installing via uv ..."
+    uv tool install graphifyy >/dev/null 2>&1 || true
+  elif command -v pipx >/dev/null 2>&1; then
+    echo "  graphify: installing via pipx ..."
+    pipx install graphifyy >/dev/null 2>&1 || true
+  else
+    echo "  graphify: skipped (install uv or pipx to enable the /graphify skill)"
+  fi
+fi
+if command -v graphify >/dev/null 2>&1; then
+  echo "  graphify: registering the /graphify skill ..."
+  graphify install --platform claude >/dev/null 2>&1 || true
+fi
+
 echo ""
 echo "Done. Verify with:  ls -la $DST"
 echo "Changes made in $REPO apply immediately (they're symlinks)."
