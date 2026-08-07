@@ -37,7 +37,10 @@ State lives on disk (`docs/<feature>-spec.md`, `docs/<feature>.md`,
 - **Improve existing code without changing behavior** → `/refactor`: understand → test
   net → tiny steps → verify. The "two hats" — never mix a refactor with a feature.
 - **Landing on an unfamiliar project** → `/onboard`: inspects the repo and writes an HTML
-  overview + architecture diagram so you can get up to speed fast.
+  overview + architecture diagram so you can get up to speed fast. On a large repo it
+  indexes with **graphify** first; you can then keep querying the graph during the work
+  (`graphify query "what connects X to Y"`, `graphify path A B`, `graphify explain Node`)
+  instead of grepping.
 - **Wrap up** → `/commit` (conventional message) and `/pr` (PR from the docs).
 
 ## Command reference

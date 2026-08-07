@@ -9,9 +9,20 @@ Goal: understand an unfamiliar codebase quickly and leave a durable, human-reada
 **HTML overview** plus an **architecture diagram**. This is read-only inspection — do not
 change project code or its `CLAUDE.md`.
 
-## 1. Inspect with `Explore` (read-only, in parallel)
+## 1. Map the codebase
 
-Launch 1–3 `Explore` subagents (fan out, keep the main context light) to map:
+First gauge the size: `git ls-files | wc -l` (or a quick file count).
+
+**Large or unfamiliar repo (hundreds+ of files) and `graphify` is available** → build a
+knowledge graph instead of grepping blind. Index locally with `graphify . --code-only`
+(no API cost, code never leaves the machine; add `--no-viz` above ~5000 nodes), then read
+`graphify-out/GRAPH_REPORT.md` (god nodes, cross-file links) and query
+`graphify-out/graph.json` (`graphify explain "X"`, `graphify path "A" "B"`) to fill the
+*Architecture*, *Flows*, and *Data model* sections. **Cite the confidence tags** — trust
+`EXTRACTED` edges, treat `INFERRED` as a hypothesis to confirm in the source.
+
+**Small repo, or graphify not installed** → launch 1–3 `Explore` subagents (fan out, keep
+the main context light). Either way, map:
 
 - **Stack & tooling** — languages, framework, package manager, key dependencies
   (`package.json`, `composer.json`, `pyproject.toml`, etc.), scripts, CI.

@@ -16,6 +16,9 @@ Installed automatically by `install.sh` on any machine:
 - **superpowers, frontend-design, code-review, code-simplifier** — bootstrapped from the
   `claude-plugins-official` marketplace (reinstalled, not vendored, so they stay
   updated). See the note in the README about superpowers' overlap with the workflow.
+- **graphify** (code knowledge graph) — bootstrapped by `install.sh` when `uv` or `pipx`
+  is present (no-ops otherwise). Installed per machine, not vendored. See below for when
+  to reach for it.
 
 ## 1. TDD enforcement (most aligned with my process)
 
@@ -43,6 +46,23 @@ MCPs give the agent access to real tools. The highest-leverage ones for my stack
 
 Start with **context7** and **Playwright**: they move the needle most for my
 front-heavy combo + e2e gap.
+
+### graphify: code knowledge graph (when to use)
+
+Turns a codebase into a queryable graph (`graph.json` + `GRAPH_REPORT.md`) instead of
+grepping. Code is parsed **locally** with tree-sitter — it never leaves the machine, and
+`--code-only` skips docs/media so there's **zero API cost**. Invoke via the `/graphify`
+skill or the CLI.
+
+- **Use it on large or inherited repos** (hundreds+ of files) where grep is expensive and
+  the connections aren't obvious — it's the natural first step of `/onboard`, and answers
+  "what connects X to Y" during feature/bug work: `graphify query "..."`,
+  `graphify path "A" "B"`, `graphify explain "Node"`.
+- **Skip it on small repos** (like this devkit): plain grep is enough and the index is
+  overhead.
+- **Flags that matter:** `--code-only` (no API cost), `--no-viz` (skip the HTML above
+  ~5000 nodes). Every edge carries a confidence tag — trust `EXTRACTED`, verify
+  `INFERRED` against the source.
 
 ## 3. Subagents already included in this devkit
 

@@ -100,9 +100,11 @@ For project-specific configuration, copy what's needed into that repo's `.claude
 
 - **Bundled** (vendored in the repo, travel via symlink): the workflow skills, the
   `archify` diagram skill, and the `context7` docs rule.
-- **Bootstrapped** (reinstalled from the marketplace, not vendored — so they keep
-  getting updates): the official plugins `frontend-design`, `code-review`,
-  `code-simplifier`. Edit the list near the end of `install.sh` to taste.
+- **Bootstrapped** (reinstalled from source, not vendored — so they keep getting
+  updates): the official plugins `frontend-design`, `code-review`, `code-simplifier`, and
+  **graphify** (a local code knowledge graph, installed via `uv`/`pipx` when present — its
+  `/graphify` skill files are gitignored). Edit the list near the end of `install.sh` to
+  taste.
 
 > **Note on superpowers:** it's a full development methodology (TDD, plan-first,
 > subagent-driven dev, code review) that overlaps this devkit's own workflow, so it's
