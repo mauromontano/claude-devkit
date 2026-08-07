@@ -15,11 +15,12 @@ First gauge the size: `git ls-files | wc -l` (or a quick file count).
 
 **Large or unfamiliar repo (hundreds+ of files) and `graphify` is available** → build a
 knowledge graph instead of grepping blind. Index locally with `graphify . --code-only`
-(no API cost, code never leaves the machine; add `--no-viz` above ~5000 nodes), then read
-`graphify-out/GRAPH_REPORT.md` (god nodes, cross-file links) and query
-`graphify-out/graph.json` (`graphify explain "X"`, `graphify path "A" "B"`) to fill the
-*Architecture*, *Flows*, and *Data model* sections. **Cite the confidence tags** — trust
-`EXTRACTED` edges, treat `INFERRED` as a hypothesis to confirm in the source.
+(no API cost, code never leaves the machine; add `--no-viz` above ~5000 nodes). Then query
+`graphify-out/graph.json` directly — `graphify explain "X"`, `graphify path "A" "B"` — to
+fill the *Architecture*, *Flows*, and *Data model* sections. For a narrative summary (god
+nodes, communities) run `graphify cluster-only .` to produce `GRAPH_REPORT.md` (note: it
+names communities with an LLM unless you pass `--no-label`). **Cite the confidence tags** —
+trust `EXTRACTED` edges, treat `INFERRED` as a hypothesis to confirm in the source.
 
 **Small repo, or graphify not installed** → launch 1–3 `Explore` subagents (fan out, keep
 the main context light). Either way, map:
