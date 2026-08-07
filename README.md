@@ -41,7 +41,7 @@ claude-devkit/
     ├── CLAUDE.md              # engineering constitution (global, loaded every session)
     ├── settings.json          # hooks (post-edit lint), statusline, model
     ├── agents/                # subagents: planner, code/security reviewers, spec verifier, test/docs writers
-    ├── commands/              # /feature /spec /document /tasks /diagram /stage /review /refactor /bug /commit /pr
+    ├── commands/              # /feature /task /onboard /spec /document /tasks /diagram /stage /review /refactor /bug /commit /pr
     ├── hooks/                 # hook scripts (post-edit, protect-paths, statusline)
     ├── rules/                 # global rules (context7: latest docs via the ctx7 CLI)
     └── skills/                # feature-workflow (+ references/), laravel, node-next, archify
@@ -69,7 +69,9 @@ One line per phase:
 | **4. Per-stage review** | `code-reviewer` (plus `security-reviewer` and `spec-verifier` as needed) audit before advancing. | `/review` |
 | **5. Close** | Docs updated, full suite run, conventional commit/PR, spec archived. | `/commit`, `/pr` |
 
-Other entry points: `/bug` (reproduce → red test → root cause → minimal fix) and
+Other entry points: `/task` (sizes a change and scales the depth, routing to
+feature/bug/refactor), `/onboard` (inspects an unfamiliar repo → HTML overview +
+architecture diagram), `/bug` (reproduce → red test → root cause → minimal fix) and
 `/refactor` (behavior-preserving, tiny steps over a test net).
 
 The golden rule: **never advance past a stage that isn't green and reviewed.**
