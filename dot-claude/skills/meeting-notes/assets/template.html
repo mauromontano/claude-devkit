@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="meeting-notes">
+  <title>[[TITLE]] — Meeting Notes</title>
+  <script>
+    // Resolve the theme before first paint so light-preference users don't see
+    // a dark flash. The toolbar script below re-applies with UI state.
+    (function () {
+      try {
+        var theme = null;
+        try {
+          var param = new URLSearchParams(window.location.search).get('theme');
+          if (param === 'light' || param === 'dark') theme = param;
+        } catch (_) {}
+        if (!theme) {
+          try { theme = localStorage.getItem('meeting-notes-theme'); } catch (_) {}
+        }
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (_) {}
+    })();
+  </script>
+  <style>
+    /* ==========================================================
+       THEME VARIABLES — switch by toggling [data-theme] on <html>
+       Palette mirrors the archify design system for consistency.
+       ========================================================== */
+    :root,
+    [data-theme="dark"] {
+      --bg: #020617;
+      --panel: #0f172a;
+      --panel-border: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      --accent: #34d399;      /* decisions / positive */
+      --accent-2: #22d3ee;    /* metadata / links */
+      --warn: #fbbf24;        /* open questions */
+      --danger: #fb7185;      /* risks & blockers */
+      --violet: #a78bfa;      /* quotes */
+      --chip-bg: rgba(148, 163, 184, 0.14);
+      --table-head: rgba(148, 163, 184, 0.10);
+      --table-border: #1e293b;
+      --row-alt: rgba(148, 163, 184, 0.04);
+      --toolbar-bg: rgba(15, 23, 42, 0.8);
+      --toolbar-border: #334155;
+      --toolbar-text: #e2e8f0;
+      --toolbar-hover: rgba(15, 23, 42, 0.95);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-faint: #94a3b8;
+      --accent: #059669;
+      --accent-2: #0891b2;
+      --warn: #b45309;
+      --danger: #e11d48;
+      --violet: #7c3aed;
+      --chip-bg: rgba(15, 23, 42, 0.06);
+      --table-head: rgba(15, 23, 42, 0.04);
+      --table-border: #e2e8f0;
+      --row-alt: rgba(15, 23, 42, 0.025);
+      --toolbar-bg: rgba(255, 255, 255, 0.92);
+      --toolbar-border: #cbd5e1;
+      --toolbar-text: #334155;
+      --toolbar-hover: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+                   Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem 4rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; }
+
+    /* ---- Header -------------------------------------------------- */
+    .doc-header { margin-bottom: 2rem; }
+    .doc-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--chip-bg);
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .chip b { color: var(--text); font-weight: 600; }
+
+    /* ---- Sections ------------------------------------------------ */
+    section { margin-top: 2rem; }
+    section > h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      margin-bottom: 0.9rem;
+    }
+    section > h2::before {
+      content: "";
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--text-faint);
+      flex: none;
+    }
+    section.s-tldr      > h2::before { background: var(--accent-2); }
+    section.s-decisions > h2::before { background: var(--accent); }
+    section.s-actions   > h2::before { background: var(--accent); }
+    section.s-questions > h2::before { background: var(--warn); }
+    section.s-risks     > h2::before { background: var(--danger); }
+    section.s-quotes    > h2::before { background: var(--violet); }
+    section.s-links     > h2::before { background: var(--accent-2); }
+
+    ul, ol { padding-left: 1.3rem; }
+    li { margin: 0.3rem 0; }
+    li::marker { color: var(--text-faint); }
+
+    .empty { color: var(--text-faint); font-style: italic; }
+    .low-conf {
+      color: var(--warn);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-left: 0.4rem;
+    }
+
+    /* ---- Action-items table -------------------------------------- */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--table-border);
+      vertical-align: top;
+    }
+    thead th { background: var(--table-head); font-weight: 600; }
+    tbody tr:nth-child(even) { background: var(--row-alt); }
+    td.owner { white-space: nowrap; color: var(--accent-2); font-weight: 600; }
+    td.due   { white-space: nowrap; color: var(--text-muted); }
+    .status {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--text-muted);
+    }
+    .status.open { color: var(--warn); }
+    .status.done { color: var(--accent); }
+
+    blockquote {
+      border-left: 3px solid var(--violet);
+      padding: 0.2rem 0 0.2rem 1rem;
+      margin: 0.7rem 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    blockquote cite { display: block; font-style: normal; font-size: 0.8rem; color: var(--text-faint); margin-top: 0.25rem; }
+
+    a { color: var(--accent-2); }
+
+    /* ---- Digest: per-meeting details ----------------------------- */
+    details.meeting {
+      border: 1px solid var(--panel-border);
+      border-radius: 0.75rem;
+      background: var(--panel);
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+    details.meeting > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: baseline;
+    }
+    details.meeting > summary::-webkit-details-marker { display: none; }
+    details.meeting > summary .when { color: var(--text-faint); font-weight: 400; font-size: 0.8rem; }
+    details.meeting[open] > summary { border-bottom: 1px solid var(--panel-border); }
+    details.meeting .meeting-body { padding: 0.5rem 1.25rem 1.25rem; }
+    details.meeting .meeting-body section:first-child { margin-top: 1rem; }
+
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--panel-border);
+      color: var(--text-faint);
+      font-size: 0.78rem;
+    }
+
+    /* ---- Toolbar (theme toggle + print) -------------------------- */
+    .toolbar {
+      position: fixed;
+      top: 1rem; right: 1rem;
+      display: flex; gap: 0.5rem;
+      z-index: 100;
+    }
+    .toolbar button {
+      background: var(--toolbar-bg);
+      color: var(--toolbar-text);
+      border: 1px solid var(--toolbar-border);
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .toolbar button:hover { background: var(--toolbar-hover); border-color: var(--accent-2); }
+    .toolbar button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+    @media (max-width: 640px) {
+      body { padding: 1.25rem 1rem 3rem; }
+      .toolbar { position: static; justify-content: flex-end; margin-bottom: 1rem; }
+      .doc-header h1 { font-size: 1.4rem; }
+    }
+
+    /* ---- Print --------------------------------------------------- */
+    @page { margin: 1.5cm; }
+    @media print {
+      :root, [data-theme="dark"], [data-theme="light"] {
+        --bg: #ffffff; --panel: #ffffff; --panel-border: #e2e8f0;
+        --text: #0f172a; --text-muted: #334155; --text-faint: #64748b;
+        --table-head: #f1f5f9; --table-border: #cbd5e1; --row-alt: #f8fafc;
+        --chip-bg: #f1f5f9;
+      }
+      body { background: #fff !important; padding: 0; }
+      .toolbar { display: none !important; }
+      details.meeting { break-inside: avoid; }
+      details.meeting[open] > summary { border-bottom: 1px solid #e2e8f0; }
+      details:not([open]) > .meeting-body { display: block; } /* print all, even collapsed */
+      section, table, blockquote { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar" role="toolbar" aria-label="Document actions">
+    <button id="btn-theme" type="button" title="Toggle theme (T)" aria-label="Toggle color theme" aria-pressed="false">
+      <span id="theme-icon" aria-hidden="true">&#9790;</span>
+      <span id="theme-label">Dark</span>
+    </button>
+    <button id="btn-print" type="button" title="Print or save as PDF (P)" aria-label="Print or save as PDF">
+      &#128424; Print
+    </button>
+  </div>
+
+  <div class="container">
+
+    <!-- =====================================================================
+         SINGLE-MEETING LAYOUT
+         Keep this block for one meeting; delete the DIGEST block below.
+         ===================================================================== -->
+    <!-- MEETING:SINGLE_START -->
+    <div class="doc-header">
+      <h1>[[TITLE]]</h1>
+      <div class="meta">
+        <span class="chip">&#128197; <b>[[DATE]]</b></span>
+        <span class="chip">&#9201; [[DURATION]]</span>
+        <span class="chip">&#128101; [[ATTENDEES]]</span>
+      </div>
+    </div>
+
+    <section class="s-tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li>[[TLDR_BULLET]]</li>
+        <!-- 3–5 bullets. If none: <p class="empty">None captured.</p> -->
+      </ul>
+    </section>
+
+    <section class="s-decisions">
+      <h2>Key decisions</h2>
+      <ul>
+        <li>[[DECISION]]</li>
+        <!-- or: <p class="empty">None captured.</p> -->
+      </ul>
+    </section>
+
+    <section class="s-actions">
+      <h2>Action items</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Item</th><th>Owner</th><th>Due</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>[[ACTION_ITEM]]</td>
+              <td class="owner">[[OWNER]]</td>
+              <td class="due">[[DUE]]</td>
+              <td><span class="status open">Open</span></td>
+            </tr>
+            <!-- Mark uncertain owner/due with <span class="low-conf">unclear</span>.
+                 If none: a single row with <td colspan="4" class="empty">None captured.</td> -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="s-questions">
+      <h2>Open questions</h2>
+      <ul>
+        <li>[[QUESTION]]</li>
+      </ul>
+    </section>
+
+    <section class="s-risks">
+      <h2>Risks &amp; blockers</h2>
+      <ul>
+        <li>[[RISK]]</li>
+      </ul>
+    </section>
+
+    <section class="s-topics">
+      <h2>Topics discussed</h2>
+      <ul>
+        <li><b>[[TOPIC]]</b> — [[TOPIC_NOTE]]</li>
+      </ul>
+    </section>
+
+    <section class="s-quotes">
+      <h2>Notable quotes</h2>
+      <blockquote>[[QUOTE]]<cite>— [[SPEAKER]]</cite></blockquote>
+    </section>
+
+    <section class="s-links">
+      <h2>Links &amp; resources</h2>
+      <ul>
+        <li><a href="[[URL]]">[[LINK_LABEL]]</a></li>
+      </ul>
+    </section>
+    <!-- MEETING:SINGLE_END -->
+
+    <!-- =====================================================================
+         DAILY-DIGEST LAYOUT
+         Keep this block for a day of meetings; delete the SINGLE block above.
+         Merged action items at the top, then one <details> per meeting.
+         ===================================================================== -->
+    <!-- MEETING:DIGEST_START -->
+    <div class="doc-header">
+      <h1>Daily digest — [[DATE]]</h1>
+      <div class="meta">
+        <span class="chip">&#128197; <b>[[DATE]]</b></span>
+        <span class="chip">&#128196; [[MEETING_COUNT]] meetings</span>
+      </div>
+    </div>
+
+    <section class="s-actions">
+      <h2>All action items</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Item</th><th>Owner</th><th>Due</th><th>Meeting</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>[[ACTION_ITEM]]</td>
+              <td class="owner">[[OWNER]]</td>
+              <td class="due">[[DUE]]</td>
+              <td>[[MEETING_TITLE]]</td>
+              <td><span class="status open">Open</span></td>
+            </tr>
+            <!-- De-duplicate items that recur across meetings; keep one row. -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="s-topics">
+      <h2>Meetings</h2>
+
+      <details class="meeting" open>
+        <summary><span>[[MEETING_TITLE]]</span><span class="when">[[TIME]] · [[DURATION]]</span></summary>
+        <div class="meeting-body">
+          <!-- Reuse the single-meeting sections here (TL;DR, decisions,
+               questions, risks, topics, quotes, links) for THIS meeting. -->
+          <section class="s-tldr">
+            <h2>TL;DR</h2>
+            <ul><li>[[TLDR_BULLET]]</li></ul>
+          </section>
+          <section class="s-decisions">
+            <h2>Key decisions</h2>
+            <ul><li>[[DECISION]]</li></ul>
+          </section>
+        </div>
+      </details>
+      <!-- Repeat <details class="meeting"> per meeting of the day. -->
+
+    </section>
+    <!-- MEETING:DIGEST_END -->
+
+    <p class="footer">Generated by <b>/meeting</b> from a Google Meet transcript · [[GENERATED_AT]]</p>
+  </div>
+
+  <script>
+    /* Theme toggle — persists to localStorage, respects system pref. */
+    (function () {
+      var STORAGE_KEY = 'meeting-notes-theme';
+      var html = document.documentElement;
+      var btn = document.getElementById('btn-theme');
+      var icon = document.getElementById('theme-icon');
+      var label = document.getElementById('theme-label');
+
+      function readStored() { try { return localStorage.getItem(STORAGE_KEY); } catch (_) { return null; } }
+      function writeStored(v) { try { localStorage.setItem(STORAGE_KEY, v); } catch (_) {} }
+      function urlOverride() {
+        try {
+          var p = new URLSearchParams(window.location.search).get('theme');
+          if (p === 'light' || p === 'dark') return p;
+        } catch (_) {}
+        return null;
+      }
+      function apply(theme) {
+        html.setAttribute('data-theme', theme);
+        icon.textContent = theme === 'dark' ? '☾' : '☼';
+        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+        btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      }
+      function resolveInitial() {
+        var u = urlOverride(); if (u) return u;
+        var s = readStored(); if (s === 'light' || s === 'dark') return s;
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      apply(resolveInitial());
+      btn.addEventListener('click', function () {
+        var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        apply(next); writeStored(next);
+      });
+      try {
+        var media = window.matchMedia('(prefers-color-scheme: light)');
+        var onChange = function (e) {
+          if (urlOverride() || readStored() === 'light' || readStored() === 'dark') return;
+          apply(e.matches ? 'light' : 'dark');
+        };
+        if (media.addEventListener) media.addEventListener('change', onChange);
+        else if (media.addListener) media.addListener(onChange);
+      } catch (_) {}
+
+      document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        var t = e.target;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+        if (e.key === 't' || e.key === 'T') { e.preventDefault(); btn.click(); }
+        else if (e.key === 'p' || e.key === 'P') { e.preventDefault(); window.print(); }
+      });
+    })();
+  </script>
+</body>
+</html>

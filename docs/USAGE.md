@@ -41,6 +41,9 @@ State lives on disk (`docs/<feature>-spec.md`, `docs/<feature>.md`,
   indexes with **graphify** first; you can then keep querying the graph during the work
   (`graphify query "what connects X to Y"`, `graphify path A B`, `graphify explain Node`)
   instead of grepping.
+- **Organizing meeting notes** → `/meeting`: turns a Google Meet transcript into a
+  self-contained HTML doc (TL;DR, decisions, action items, open questions, risks), or
+  merges a whole day's transcripts into one digest. See below for details.
 - **Wrap up** → `/commit` (conventional message) and `/pr` (PR from the docs).
 
 ## Command reference
@@ -50,6 +53,7 @@ State lives on disk (`docs/<feature>-spec.md`, `docs/<feature>.md`,
 | `/feature <desc>` | Starts the end-to-end feature loop at brainstorm | New, non-trivial work |
 | `/task <desc>` | Sizes a change and scales the depth; routes to feature/bug/refactor | Updates, changes, maintenance |
 | `/onboard [path]` | Inspects a project → HTML overview + architecture diagram | Landing on an unfamiliar repo |
+| `/meeting [meeting/date/path]` | Transcript → self-contained HTML notes doc, single or daily digest | After meetings, to organize notes |
 | `/spec [name]` | Writes requirements + Given/When/Then acceptance scenarios | Phase 2, before coding |
 | `/document [name]` | Writes/updates the design doc (decisions, contract, data model) | Phase 2 and on close |
 | `/tasks [name]` | Writes/updates the stage checklist (durable state) | Phase 2, ticked per stage |
@@ -82,7 +86,56 @@ commands, or on request.
 - **Rules:** `context7` — fetch current library docs via the `ctx7` CLI instead of
   relying on training data.
 - **Skills:** `feature-workflow` (the process), `laravel` and `node-next` (per-stack
-  conventions), `archify` (diagrams). They load on demand when relevant.
+  conventions), `archify` (diagrams), `meeting-notes` (transcript → HTML notes doc).
+  They load on demand when relevant.
+
+## `/meeting` — meeting notes from a transcript
+
+Turns a Google Meet transcript (Meet's "take notes"/Gemini output) into a
+self-contained HTML document with fixed sections: TL;DR, key decisions, action items
+(owner + due), open questions, risks & blockers, topics discussed, notable quotes,
+links. Dark/light toggle, print-to-PDF, no external dependencies — opens offline.
+
+**Input**, in order of preference:
+1. A file path or pasted transcript text — the reliable path, always works.
+2. Gmail via **Claude in Chrome** (your logged-in session) — Meet emails a *link to a
+   Google Doc*, not raw text, so opening the doc is a confirmed, permissioned step.
+   Falls back to (1) if Gmail isn't reachable or you decline to open a doc.
+
+**Scope**: one meeting → one doc, or a whole day's meetings → one digest with a merged,
+de-duplicated action-items table and a collapsible section per meeting.
+
+**Output**: saved to **Google Drive "Meet Recordings"** folder when Google Drive Desktop
+is installed and synced (`~/Library/CloudStorage/GoogleDrive-*/…/Meet Recordings/<date>/`),
+otherwise falls back to `~/meeting-notes/<YYYY-MM-DD>/` with a note. Slug from the meeting
+title; digest: `digest.html`. Clean up old date folders manually whenever convenient.
+
+Examples:
+
+```bash
+/meeting notes.txt
+```
+Extracts from a local transcript file (or pasted text) — no browser needed.
+
+```bash
+/meeting "Weekly planning sync"
+```
+Looks up that meeting's transcript email in Gmail (asks to confirm before opening any
+linked Google Doc), then generates the notes doc.
+
+```bash
+/meeting today
+```
+Builds a digest of every meeting transcript from today.
+
+```bash
+/meeting 2026-08-07
+```
+Digest for a specific past day.
+
+The extraction rubric and section definitions live in
+`dot-claude/skills/meeting-notes/references/extraction.md`; edit them (or
+`assets/template.html`) to change what the default template captures.
 
 ## Git conventions
 
