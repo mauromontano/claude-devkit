@@ -44,14 +44,27 @@ código real, corriendo el test, consultando la DB). Solo sobreviven los confirm
 Marcas de evidencia en el reporte: **✓** = ejecutado/verificado contra código o datos reales,
 **~** = plausible sin reproducción. Nunca presentes un ~ como ✓.
 
-## 4. Síntesis: el reporte
+## 4. Síntesis: el reporte y sus 3 entregables
 
 - Severidades: **🟠 media-alta (bloquea)** · **🟡 media (decisión de diseño)** · **🔵 baja** ·
   **proceso/evidencia**. Cada hallazgo: `archivo:línea` + impacto concreto + fix propuesto + marca.
 - Sección **"Lo que está bien"** (obligatoria — el review también confirma).
-- Cerrá con el **recibo para la PR**: bloque markdown listo para pegar en el body
-  (`## Review evidence`: metodología en 1 línea, hallazgos y su resolución, marcas ✓/~).
-- Si el reporte es largo, publicalo como artifact compartible y pegá el link en el recibo.
+
+Entregables, siempre los tres:
+
+1. **Doc HTML del audit** (con lujo de detalle): un HTML autocontenido con cada bug explicado —
+   qué es, dónde (`archivo:línea` con el snippet), el escenario concreto de falla, por qué
+   importa, y los **fixes posibles con sus trade-offs** (cuál recomendás y por qué). Incluí la
+   metodología (dimensiones, verificación adversarial, marcas ✓/~) y "Lo que está bien".
+   Guardalo en `mauro-docs/mango/<feature>/<pr>-auditoria.html` (o `docs/` del repo si se va a
+   commitear) y publicalo como artifact si conviene compartirlo.
+2. **Bloque copiable A — el audit para el PR**: markdown listo para pegar como comentario del
+   PR. Formato: metodología en 1 línea + tabla/lista de hallazgos por severidad
+   (`archivo:línea`, una línea cada uno, marca ✓/~) + link al doc/artifact. Es el recibo.
+3. **Bloque copiable B — la respuesta con los fixes**: markdown listo para pegar como respuesta
+   al audit, con qué se va a atacar y cómo (una línea por hallazgo: fix ahora / deuda `TD-###` /
+   declinado con razón). Lo drafteás desde MIS decisiones en el gate — mostrame los hallazgos,
+   yo decido hallazgo por hallazgo, y ahí lo armás.
 
 ## Reglas
 
