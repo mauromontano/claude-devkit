@@ -67,6 +67,5 @@
         "repo": "anthropics/claude-plugins-official"
       }
     }
-  },
-  "tui": "fullscreen"
+  }
 }

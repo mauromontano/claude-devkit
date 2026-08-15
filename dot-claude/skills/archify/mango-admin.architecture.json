@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "mango-admin — Arquitectura del sistema",
+    "subtitle": "Panel backoffice Laravel 9 · admin.mangxo.com · reacciona al estado de mango-api",
+    "output": "architecture.html"
+  },
+  "components": [
+    { "id": "users", "type": "external", "label": "Operadores", "sublabel": "Navegador · admin.mangxo.com", "pos": [40, 320], "size": [150, 66] },
+    { "id": "oauth", "type": "security", "label": "Google OAuth", "sublabel": "SSO con Socialite", "pos": [40, 120], "size": [150, 62] },
+
+    { "id": "ui", "type": "frontend", "label": "Blade admin-v2", "sublabel": "Tailwind · Alpine · x-ui.*", "pos": [250, 320], "size": [160, 66] },
+    { "id": "rbac", "type": "security", "label": "RBAC (Spatie)", "sublabel": "admin_permissions.php", "pos": [470, 120], "size": [170, 66], "tag": "8 roles" },
+    { "id": "routes", "type": "backend", "label": "Rutas + mw admin", "sublabel": "31 archivos · permission:*", "pos": [470, 320], "size": [180, 66] },
+    { "id": "controllers", "type": "backend", "label": "Controladores delgados", "sublabel": "Http/Controllers/Admin", "pos": [710, 320], "size": [170, 66] },
+    { "id": "scheduler", "type": "backend", "label": "Scheduler + Jobs", "sublabel": "Console/Kernel · Observers", "pos": [940, 120], "size": [170, 66] },
+    { "id": "services", "type": "backend", "label": "Capa de servicios", "sublabel": "~55 servicios · DB::transaction", "pos": [940, 320], "size": [170, 66], "tag": "lógica de negocio" },
+
+    { "id": "mango_api", "type": "cloud", "label": "mango-api", "sublabel": "REST · X-API-Token", "pos": [1200, 120], "size": [170, 66], "tag": "genera estado" },
+    { "id": "mysql", "type": "database", "label": "MySQL compartida", "sublabel": "schema de mango-api", "pos": [1200, 320], "size": [170, 66] },
+
+    { "id": "cobros", "type": "external", "label": "Cobros API", "sublabel": "Crédito Mango", "pos": [250, 540], "size": [150, 60] },
+    { "id": "alegra", "type": "external", "label": "Alegra", "sublabel": "facturación CFDI", "pos": [430, 540], "size": [150, 60] },
+    { "id": "penalty", "type": "external", "label": "Penalty API", "sublabel": "v2 + v3 shadow", "pos": [610, 540], "size": [150, 60] },
+    { "id": "weetrust", "type": "external", "label": "Weetrust", "sublabel": "firma electrónica", "pos": [790, 540], "size": [150, 60] },
+    { "id": "stp", "type": "external", "label": "STP / SPEI", "sublabel": "vía mango-api", "pos": [970, 540], "size": [150, 60] },
+    { "id": "obs", "type": "external", "label": "Sentry + Slack", "sublabel": "errores · logs", "pos": [1200, 540], "size": [170, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "mango-admin (Laravel 9) — UI + orquestación", "wraps": ["ui", "rbac", "routes", "controllers", "scheduler", "services"] },
+    { "kind": "region", "label": "Propiedad de mango-api — schema + estado transaccional", "wraps": ["mango_api", "mysql"] }
+  ],
+  "connections": [
+    { "from": "users", "to": "ui", "label": "HTTPS", "variant": "emphasis" },
+    { "from": "oauth", "to": "routes", "label": "SSO Google", "variant": "security", "fromSide": "right", "toSide": "top", "labelDy": -6 },
+    { "from": "ui", "to": "routes" },
+    { "from": "rbac", "to": "routes", "label": "control de permisos", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelDy": 62 },
+    { "from": "routes", "to": "controllers" },
+    { "from": "controllers", "to": "services" },
+    { "from": "scheduler", "to": "services", "label": "dispatch", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "labelDy": 62 },
+    { "from": "services", "to": "mysql", "label": "Eloquent", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "from": "services", "to": "mango_api", "label": "HTTP", "variant": "emphasis", "fromSide": "top", "toSide": "left", "labelDy": -8 },
+    { "from": "services", "to": "cobros", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "from": "services", "to": "alegra", "fromSide": "bottom", "toSide": "top" },
+    { "from": "services", "to": "penalty", "fromSide": "bottom", "toSide": "top" },
+    { "from": "services", "to": "weetrust", "fromSide": "bottom", "toSide": "top" },
+    { "from": "services", "to": "stp", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "from": "services", "to": "obs", "label": "logs", "variant": "dashed", "fromSide": "right", "toSide": "top", "labelDy": -6 }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "Camino del request", "items": ["Operadores → Blade admin-v2 → rutas (mw admin)", "Controladores delgados delegan en la capa de servicios", "Escrituras multi-modelo dentro de DB::transaction"] },
+    { "dot": "amber", "title": "Frontera con mango-api", "items": ["MySQL compartida: schema autorado en mango-api (aquí no hay migraciones)", "Cliente REST para operaciones de dinero/transaccionales (X-API-Token)", "mango-api genera estado; admin reacciona y orquesta"] },
+    { "dot": "rose", "title": "Seguridad e integraciones", "items": ["Google OAuth + RBAC de Spatie protegen cada ruta", "Alegra CFDI, Penalty API v2/v3, Weetrust, Cobros, STP", "Sentry + Slack para errores y logs de auditoría"] }
+  ]
+}
