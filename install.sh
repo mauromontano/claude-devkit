@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Installs the devkit by symlinking dot-claude/* into ~/.claude.
+# Installs the devkit by symlinking dot-claude/* into the Claude config dir.
+# Default target is ~/.claude; set CLAUDE_CONFIG_DIR to install into another
+# account (e.g. CLAUDE_CONFIG_DIR="$HOME/.claude-mango" ./install.sh).
 # Idempotent: safe to run multiple times. Backs up whatever it replaces.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$REPO/dot-claude"
-DST="$HOME/.claude"
+DST="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
 mkdir -p "$DST"
