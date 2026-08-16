@@ -24,15 +24,18 @@ En `mango-engineering/specs/<feature>/` — la estructura real es
 Si `specs/<feature>/` no existe, decilo y listá `mango-engineering/specs/` para ofrecer los
 nombres válidos — no inventes.
 
-## 2. El par de branches api↔app (estado real)
+## 2. Las branches de la feature en todos los repos que la tocan (estado real)
 
-En `mango-api` y `mango-app-v2`, en paralelo:
+Revisá **`mango-api`, `mango-app-v2` y `mango-admin`** en paralelo (son los tres repos de
+proyectos: backend, front del cliente, panel admin). Si el slug aparece en otro repo de trabajo
+(`git branch -a --list "*<keyword>*"` da algo), sumalo — el set no está fijo.
 
 - Branch actual + branches de la feature: `git branch -a --list "*<keyword>*"` (probá con el
-  slug de la feature, ej. `proyectos`).
+  slug de la feature, ej. `proyectos`; en admin puede ser otro, ej. `migrate-projects-view`).
 - PRs abiertas de la feature: `gh pr list --search "<keyword>"` (+ las mías:
   `gh pr list --author @me`), con estado de checks (`gh pr checks`).
 - Qué hay sin commitear: `git status -s`.
+- En el brief, agrupá por repo y marcá en cuál estoy parado (el `cwd`).
 
 ## 3. Memoria
 
@@ -48,12 +51,14 @@ de verdad sigue siendo la spec del equipo — si difieren, ganá la spec y avisa
 ## Salida: el brief (conciso, con evidencia)
 
 1. **Dónde estoy parado** (3-5 líneas): feature, ola activa, mi entregable, deadline si hay.
-2. **Backend**: branch/PR que sigue en `mango-api`, estado de CI, próximo paso concreto.
-3. **Frontend**: ídem en `mango-app-v2`.
-4. **El contrato que los ata**: endpoints/shapes relevantes de la spec (citá la sección).
-5. **Bloqueos** conocidos.
+2. **Backend** (`mango-api`): branch/PR que sigue, estado de CI, próximo paso concreto.
+3. **Frontend cliente** (`mango-app-v2`): ídem.
+4. **Admin** (`mango-admin`): ídem, solo si la feature lo toca (si no, omitilo).
+5. **El contrato que los ata**: endpoints/shapes relevantes de la spec (citá la sección).
+6. **Bloqueos** conocidos.
 
-Si estoy parado en `mango-api`, priorizá el detalle backend; en `mango-app-v2`, el frontend.
+Priorizá el detalle del repo donde estoy parado (`cwd`): admin → panel, api → backend,
+app-v2 → front del cliente. Los otros van como contexto de apoyo.
 
 ## Reglas de mi flujo (aplican siempre)
 
