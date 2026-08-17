@@ -38,6 +38,10 @@ Contexto durable: mi memoria de Claude (`MEMORY.md`, versionada en
 
 **Si el modo es `prep`:** frenás acá — mostrás el resumen del estado (paso 3) y NO escribís
 la bitácora ni el draft. Es el modo del job automatizado / vistazo rápido.
+**Si además te pido "DM" (lo hace el job de las 12:00):** mandame el resumen (los 3-5 focos
+P0/P1 + bloqueos, texto corto) como **mensaje directo de Slack a mí mismo** usando el MCP de
+Slack (buscá mi usuario y mandate el DM). Es un aviso privado, no un post a un canal. Si el MCP
+de Slack no está disponible, no rompas: seguí y dejá que la notificación local haga su parte.
 
 ## Si es CIERRE (`cierre`)
 

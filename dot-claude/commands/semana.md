@@ -1,5 +1,5 @@
 ---
-description: Cierre semanal — destila lo hecho y lo aprendido de la semana en mauro-docs/aprendizaje/ (la fuente de sabiduría).
+description: Cierre semanal — destila lo hecho y lo aprendido de la semana en mauro-docs/learning/ (la fuente de sabiduría).
 argument-hint: "" | YYYY-Www (default: la semana actual)
 ---
 
@@ -7,7 +7,7 @@ Semana: **$ARGUMENTS** (si está vacío → la semana ISO actual, formato `YYYY-
 
 Sos el destilador de mi semana. El objetivo NO es un reporte de tareas (eso ya está en las
 bitácoras): es **capturar lo que aprendí** — del negocio, del stack y del proceso — para que
-se acumule semana a semana en `mauro-docs/aprendizaje/` (repo personal, permitido pushear).
+se acumule semana a semana en `mauro-docs/learning/` (repo personal, permitido pushear).
 
 ## 1. Recolectá la semana (en paralelo)
 
@@ -17,7 +17,7 @@ se acumule semana a semana en `mauro-docs/aprendizaje/` (repo personal, permitid
   y mis PRs cerradas/abiertas de la semana (`gh pr list --author @me --state all`).
 - Mi memoria durable (`mauro-docs/claude-memory/mango/`) por si algo cambió.
 
-## 2. Destilá — el doc `mauro-docs/aprendizaje/YYYY-Www.md`
+## 2. Destilá — el doc `mauro-docs/learning/weekly/YYYY-Www.md`
 
 Secciones fijas (si una queda vacía, escribí "—" y no rellenes con paja; **cosas concretas
 de esta semana, no generalidades**):
@@ -31,14 +31,31 @@ de esta semana, no generalidades**):
 4. **Proceso/Claude** — qué funcionó del flujo (comandos, reviews, agentes), qué ajustar.
 5. **Decisiones y por qué** — cada decisión de la semana con su razón y link (PR/spec/ADR).
 
+6. **Qué sistematizar** — patrones o toil que se repitieron esta semana y podrían volverse un
+   **skill o comando** del devkit (o un hook, un script). Para cada uno: qué automatizaría y por qué.
+7. **Producto** — ideas que valdría la pena **proponer a Mango** (mejora de proceso, herramienta,
+   gap del equipo). Concretas, con el problema que atacan.
+8. **Brain / skills** — qué conviene **incorporar al devkit o a engram** (una regla nueva, un
+   dato durable, una skill). Distinguir "ya lo hago, formalizarlo" de "idea a probar".
+
 Cerrá con una línea de "**la lección de la semana**" (una sola, la que más vale recordar).
 
-## 3. Indexá y pusheá
+## 3. Generá el HTML resumen
 
-- Actualizá (o creá) `mauro-docs/aprendizaje/README.md`: una línea por semana con link y
-  la lección de la semana como hook.
-- `git add aprendizaje/ && git commit` (Conventional Commits, ej.
-  `docs(aprendizaje): distill week 2026-W33`) y **push a mauro-docs** (repo personal).
+Además del `.md`, escribí un **HTML resumen** en `mauro-docs/learning/summaries/YYYY-Www.html`
+— versión linda tipo sumario ejecutivo
+(las secciones + la lección + los candidatos a sistematizar/producto/skill), con el mismo CSS
+con toggle de tema que los explicadores de `mauro-docs/mango/` (podés copiar el patrón de
+`learning/concepts/laravel-nextjs.html`). Es lo que se comparte de un vistazo.
+
+## 4. Indexá, pusheá y avisá
+
+- Actualizá `mauro-docs/learning/README.md`: la fila de la semana con link al `.md` (weekly/) y
+  al `.html` (summaries/) + la lección como hook.
+- `git add learning/ && git commit` (Conventional Commits, ej.
+  `docs(learning): distill week 2026-W33`) y **push a mauro-docs** (repo personal).
+- **DM de Slack:** mandame el resumen (la lección + los 2-3 candidatos a sistematizar/producto/
+  skill) como mensaje directo a mí mismo con el MCP de Slack. Si no está disponible, no rompas.
 - Mostrame el doc renderizado en resumen (10-15 líneas) al final.
 
 ## Reglas
