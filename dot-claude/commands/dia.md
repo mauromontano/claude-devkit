@@ -35,13 +35,14 @@ Contexto durable: mi memoria de Claude (`MEMORY.md`, versionada en
 5. **Redactá el draft de Slack** (formato: :sunny: Ayer / :hammer_and_wrench: Hoy / :construction:
    Bloqueos) y dejalo en la sección "Update de Slack" de la bitácora. **No lo postees** — lo pego yo.
 6. Mostrame un resumen corto (3-5 líneas): focos de hoy + el draft de Slack listo para copiar.
+7. **Ofrecé el DM de Slack:** preguntame si querés que te mande el brief (los 3-5 focos P0/P1 +
+   bloqueos, texto corto) como **mensaje directo de Slack a vos mismo** vía el MCP de Slack
+   (mi user id es `U0BQ2K3FEJU`). **Esperá mi OK antes de enviar** — es un aviso privado, no un
+   post a un canal. Si el MCP de Slack no está disponible en la sesión, decímelo y seguí. (Esto
+   es distinto del "draft de Slack" del paso 5, que es el update para el equipo que pego yo.)
 
 **Si el modo es `prep`:** frenás acá — mostrás el resumen del estado (paso 3) y NO escribís
 la bitácora ni el draft. Es el modo del job automatizado / vistazo rápido.
-**Si además te pido "DM" (lo hace el job de las 12:00):** mandame el resumen (los 3-5 focos
-P0/P1 + bloqueos, texto corto) como **mensaje directo de Slack a mí mismo** usando el MCP de
-Slack (buscá mi usuario y mandate el DM). Es un aviso privado, no un post a un canal. Si el MCP
-de Slack no está disponible, no rompas: seguí y dejá que la notificación local haga su parte.
 
 ## Si es CIERRE (`cierre`)
 

@@ -54,8 +54,9 @@ con toggle de tema que los explicadores de `mauro-docs/mango/` (podés copiar el
   al `.html` (summaries/) + la lección como hook.
 - `git add learning/ && git commit` (Conventional Commits, ej.
   `docs(learning): distill week 2026-W33`) y **push a mauro-docs** (repo personal).
-- **DM de Slack:** mandame el resumen (la lección + los 2-3 candidatos a sistematizar/producto/
-  skill) como mensaje directo a mí mismo con el MCP de Slack. Si no está disponible, no rompas.
+- **DM de Slack:** ofrecé mandarme el resumen (la lección + los 2-3 candidatos a sistematizar/
+  producto/skill) como mensaje directo a mí mismo con el MCP de Slack (user id `U0BQ2K3FEJU`).
+  **Esperá mi OK antes de enviar.** Si el MCP no está disponible, decímelo y seguí.
 - Mostrame el doc renderizado en resumen (10-15 líneas) al final.
 
 ## Reglas
