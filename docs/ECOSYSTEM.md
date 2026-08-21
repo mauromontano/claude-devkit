@@ -82,6 +82,16 @@ add one more `.md` in `dot-claude/agents/`.
   publish a `marketplace.json` in a private repo. Install with `/plugin` instead of
   symlinks, with versioning. The natural step after dotfiles.
 
+## 4.5 Orchestrator layer: Orca (adopted 2026-08)
+
+**Orca** (onorca.dev, MIT) sits *above* this devkit as the cockpit: it launches
+`claude`/`codex` CLIs in isolated git worktrees (parallel agents on the same repo
+without conflicts) and pairs with a native iOS app for remote steering. The devkit
+stays the engine — sessions launched from Orca worktrees inherit `~/.claude`
+(constitution, commands, hooks, skills) unchanged. Account separation follows the
+`CLAUDE_CONFIG_DIR` scheme per workspace. Full runbook:
+`mauro-docs/guides/orca-setup.md`; machine bootstrap: `mauro-docs/guides/nueva-mac.md`.
+
 ## 5. Additional hooks to consider
 
 - **PostToolUse (included)** — lint/format after every edit.
