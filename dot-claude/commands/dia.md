@@ -32,14 +32,26 @@ Contexto durable: mi memoria de Claude (`MEMORY.md`, versionada en
    desasociar compras. Para cada foco, el **siguiente paso concreto** — nunca dejes "en qué sigo" en duda.
 4. **Escribí la bitácora de hoy** `daily/YYYY-MM-DD.md` (fecha de hoy) desde `daily/_template-dia.md`,
    ya rellenada con foco de hoy / ayer cerré / bloqueos / notas.
-5. **Redactá el draft de Slack** (formato: :sunny: Ayer / :hammer_and_wrench: Hoy / :construction:
-   Bloqueos) y dejalo en la sección "Update de Slack" de la bitácora. **No lo postees** — lo pego yo.
-6. Mostrame un resumen corto (3-5 líneas): focos de hoy + el draft de Slack listo para copiar.
-7. **Ofrecé el DM de Slack:** preguntame si querés que te mande el brief (los 3-5 focos P0/P1 +
-   bloqueos, texto corto) como **mensaje directo de Slack a vos mismo** vía el MCP de Slack
-   (mi user id es `U0BQ2K3FEJU`). **Esperá mi OK antes de enviar** — es un aviso privado, no un
-   post a un canal. Si el MCP de Slack no está disponible en la sesión, decímelo y seguí. (Esto
-   es distinto del "draft de Slack" del paso 5, que es el update para el equipo que pego yo.)
+5. **Redactá el draft de Slack** y dejalo en la sección "Update de Slack" de la bitácora. **No lo
+   postees en canales de equipo** — ese update para el equipo lo pego yo. **Formato exacto** (sin
+   emojis; cada label en su propia línea, el contenido debajo):
+   ```
+   Ayer:
+   <qué cerramos ayer, en primera persona plural — "cerramos…", "arrancamos…" — conciso>
+   Hoy:
+   <qué voy a cerrar hoy + en qué estoy trabajando ahora mismo, en primera persona — "cerrar…",
+   "ahora mismo estoy trabajando en…">
+   ```
+   Agregá una línea `Bloqueos:` al final **solo si hay un bloqueo real**; si no hay, omitila.
+   Tono natural y directo, como hablo yo — no un status formal.
+6. **Mandame el update a mi DM de Slack, automáticamente y sin preguntar:** enviá **el mismo texto
+   del draft del paso 5** (formato `Ayer:` / `Hoy:` de arriba — *no* el brief de focos P0/P1) como
+   **mensaje directo de Slack a mí mismo** vía el MCP de Slack (mi user id es `U0BQ2K3FEJU`, canal
+   DM). Es un aviso privado a mí mismo, así que **no esperes mi OK** — mandalo directo como parte
+   del arranque. Preservá los saltos de línea tal cual. Si el MCP de Slack no está disponible en la
+   sesión, decímelo y seguí.
+7. Mostrame un resumen corto (3-5 líneas): focos de hoy + confirmación de que el update ya te llegó
+   al DM (con el link del mensaje).
 
 **Si el modo es `prep`:** frenás acá — mostrás el resumen del estado (paso 3) y NO escribís
 la bitácora ni el draft. Es el modo del job automatizado / vistazo rápido.
@@ -60,6 +72,7 @@ la bitácora ni el draft. Es el modo del job automatizado / vistazo rápido.
 ## Reglas
 
 - **Nada de secretos** en las bitácoras (tokens, `.env`, RFCs/datos reales de clientes).
-- No postees a Slack ni pushees a repos de Mango — generá drafts y esperá mi OK.
+- No pushees a repos de Mango. Para Slack: el **DM a mí mismo** (`U0BQ2K3FEJU`) va automático con el
+  update del día (paso 6); a **canales de equipo** nunca postees solo — eso lo pego yo.
 - Todo cambio de archivos es dentro de `mauro-docs/` o mi config personal de Claude.
 - Sé directo y conciso, mostrame evidencia (git/PR real), no me hagas confiar a ciegas.
