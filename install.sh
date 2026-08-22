@@ -38,6 +38,15 @@ done
 # Execute permission for the hooks
 chmod +x "$SRC"/hooks/*.sh 2>/dev/null || true
 
+# Repo router: ancestor CLAUDE.md loaded by every session under ~/Documents/GitHub.
+# Canonical file lives in this repo (workspace/CLAUDE.github.md).
+if [ -d "$HOME/Documents/GitHub" ]; then
+  link "$REPO/workspace/CLAUDE.github.md" "$HOME/Documents/GitHub/CLAUDE.md"
+fi
+
+# Ops scripts on PATH-less invocation: make bin/ executable.
+chmod +x "$REPO"/bin/*.sh 2>/dev/null || true
+
 # Install archify's optional dependency (ajv, for schema validation).
 # Without npm, archify still renders — it just skips schema validation.
 if [ -d "$SRC/skills/archify" ] && command -v npm >/dev/null 2>&1; then
