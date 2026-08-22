@@ -89,6 +89,22 @@ commands, or on request.
   conventions), `archify` (diagrams), `meeting-notes` (transcript → HTML notes doc).
   They load on demand when relevant.
 
+## Repetitive ops → the script + command + allowlist pattern
+
+Any operational task you find yourself re-explaining to Claude gets systematized as
+three pieces, so agents can do it deterministically and safely:
+
+1. **Script in `bin/`** — the deterministic part (tunnels, safety checks, ports).
+2. **Command in `dot-claude/commands/`** — the knowledge part: the exact connection
+   matrix / flow / rules, so the agent never re-derives them.
+3. **Entry in `settings.json` allowlist** — the safe subset runs without prompts;
+   anything sensitive is *deliberately left out* so the permission prompt acts as
+   the human confirmation gate.
+
+Existing examples: **`/db`** (`bin/mango-db.sh` + login-paths; prod queries excluded
+from the allowlist on purpose), `codex-review.sh` (cross-model review), and deploys
+via `mangxo-deploy` (lives in `mango-ops/tools/`, not here).
+
 ## `/meeting` — meeting notes from a transcript
 
 Turns a Google Meet transcript (Meet's "take notes"/Gemini output) into a

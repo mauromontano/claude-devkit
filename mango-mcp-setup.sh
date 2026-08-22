@@ -52,6 +52,28 @@ for name in notion; do
   fi
 done
 
+# mysql-local — read-only MySQL MCP against 127.0.0.1:3309.
+# That port is shared: it's the local Docker DB normally, or DEV when the ssh tunnel
+# is up (see bin/mango-db.sh + /db command). Read-only is enforced by the server's
+# ALLOW_* flags. Credentials come from mango-api/.env.local (local, non-secret);
+# override with MYSQL_LOCAL_USER / MYSQL_LOCAL_PASS / MYSQL_LOCAL_DB env vars.
+MANGO_API_ENV="${MANGO_API_ENV:-$HOME/Documents/GitHub/mango-api/.env.local}"
+env_of() { grep -E "^$1=" "$MANGO_API_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"'; }
+MYSQL_LOCAL_USER="${MYSQL_LOCAL_USER:-$(env_of DB_USERNAME)}"
+MYSQL_LOCAL_PASS="${MYSQL_LOCAL_PASS:-$(env_of DB_PASSWORD)}"
+MYSQL_LOCAL_DB="${MYSQL_LOCAL_DB:-$(env_of DB_DATABASE)}"
+if [ -n "$MYSQL_LOCAL_USER" ]; then
+  add mysql-local \
+    --env MYSQL_HOST=127.0.0.1 --env MYSQL_PORT=3309 \
+    --env MYSQL_USER="$MYSQL_LOCAL_USER" --env MYSQL_PASS="$MYSQL_LOCAL_PASS" \
+    --env MYSQL_DB="$MYSQL_LOCAL_DB" \
+    --env ALLOW_INSERT_OPERATION=false --env ALLOW_UPDATE_OPERATION=false \
+    --env ALLOW_DELETE_OPERATION=false --env ALLOW_DDL_OPERATION=false \
+    -- npx -y @benborla29/mcp-server-mysql
+else
+  echo "  skip: mysql-local (no creds — set MYSQL_LOCAL_USER/PASS/DB or create $MANGO_API_ENV)"
+fi
+
 echo ""
 echo "Skipped by design: sentry, slack (tokens pending in 1Password), github (token pending)."
 echo "Verify with:   CLAUDE_CONFIG_DIR=\"$CLAUDE_CONFIG_DIR\" claude mcp list"

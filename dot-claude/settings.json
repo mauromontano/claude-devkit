@@ -16,7 +16,11 @@
       "Bash(php artisan test:*)",
       "Bash(vendor/bin/pest:*)",
       "Bash(vendor/bin/pint:*)",
-      "Bash(graphify:*)"
+      "Bash(graphify:*)",
+      "Bash(mango-db.sh:*)",
+      "Bash(~/Documents/GitHub/claude-devkit/bin/mango-db.sh:*)",
+      "Bash(mysql --login-path=mango-dev:*)",
+      "Bash(mysql --login-path=mango-local:*)"
     ],
     "deny": [
       "Read(./.env)",
