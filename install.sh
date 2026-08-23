@@ -85,6 +85,15 @@ if command -v graphify >/dev/null 2>&1; then
   graphify install --platform claude >/dev/null 2>&1 || true
 fi
 
+# Memoria durable compartida: apunta el memory/ de cada proyecto a un único dir
+# versionado en mauro-docs, así todos los repos y los worktrees de Orca comparten
+# la misma memoria. Ver bin/link-memory.sh.
+if [ -x "$REPO/bin/link-memory.sh" ]; then
+  echo "  memoria: unificando en mauro-docs/claude-memory/shared ..."
+  CLAUDE_CONFIG_DIR="$DST" "$REPO/bin/link-memory.sh" >/dev/null 2>&1 || \
+    echo "    (saltado: revisar con $REPO/bin/link-memory.sh)"
+fi
+
 echo ""
 echo "Done. Verify with:  ls -la $DST"
 echo "Changes made in $REPO apply immediately (they're symlinks)."

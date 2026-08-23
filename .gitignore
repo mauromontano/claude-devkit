@@ -24,3 +24,10 @@ docs/claude-engineering-layers.html
 *.swp
 .idea/
 .vscode/
+
+# Backups y symlinks que escriben Orca / los plugins por máquina (no vendorizar)
+*.bak
+dot-claude/skills/computer-use
+dot-claude/skills/find-skills
+dot-claude/skills/orca-cli
+dot-claude/skills/orchestration
