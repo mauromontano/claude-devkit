@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 # Health-check for the Claude working environment (read-only).
-# Verifies both accounts (~/.claude personal, ~/.claude-mango team), the
+# Verifies the single Claude account (~/.claude, cuenta de Mango — el esquema
+# multicuenta quedó retirado el 2026-08-23), the
 # editor wiring, MCP registration, engram pin and config drift.
 # Run it after install.sh / on a new machine / whenever something feels off.
 set -uo pipefail
+
+# ~/.local/bin no está en el PATH de un shell no-interactivo (vive en ~/.localrc),
+# y ahí se instalan engram y las tools de uv. Sin esto el check de engram da un ❌ falso.
+export PATH="$HOME/.local/bin:$PATH"
 
 ENGRAM_PIN="1.15.11"
 DEVKIT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -42,9 +47,8 @@ check_account() { # <label> <dir>
   fi
 }
 
-echo "== Accounts =="
-check_account personal "$HOME/.claude"
-check_account mango    "$HOME/.claude-mango"
+echo "== Account (una sola: Mango) =="
+check_account mango "$HOME/.claude"
 
 echo "== Editor (VS Code) =="
 CODE="$(command -v code || true)"; [ -n "$CODE" ] || CODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"

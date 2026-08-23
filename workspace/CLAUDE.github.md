@@ -47,6 +47,6 @@ Otros directorios personales (side projects, katas, hw-*) — solo si la tarea l
 
 ## Cuentas y límites
 
-- Repos Mango → cuenta **default** (`~/.claude`, ya Mango). Personales → `claude-personal`.
+- **Una sola cuenta de Claude**: la de Mango, en `~/.claude`. No hay cuenta personal ni `claude-personal` (retirado el 2026-08-23).
 - **Nada de secretos ni datos personales en repos de Mango** — solo punteros a 1Password.
 - Cambios cross-repo: un commit/PR por repo, nunca mezclar Mango con personal.
