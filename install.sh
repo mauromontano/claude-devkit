@@ -22,11 +22,30 @@ link() {
   echo "  link:   $to -> $from"
 }
 
+# settings.json is COPIED, not symlinked. Tools like Orca write machine-local
+# hooks into ~/.claude/settings.json at runtime; with a symlink those per-machine
+# edits leak back into the versioned repo file. Copying keeps the repo copy clean
+# and canonical while the local file absorbs whatever Orca (or the machine) adds.
+# Re-run install.sh to push a genuine settings change to the local file (it backs
+# up the previous one first).
+copy_file() {
+  local from="$1" to="$2"
+  if [ -L "$to" ]; then
+    rm -f "$to"
+    echo "  unlink: $to (was a symlink; settings.json is a copy now)"
+  elif [ -e "$to" ]; then
+    cp "$to" "$to.bak-$STAMP"
+    echo "  backup: $to -> $to.bak-$STAMP"
+  fi
+  cp "$from" "$to"
+  echo "  copy:   $to <- $from"
+}
+
 echo "Installing claude-devkit into $DST ..."
 
 # Single files
-link "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
-link "$SRC/settings.json"  "$DST/settings.json"
+link      "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
+copy_file "$SRC/settings.json"  "$DST/settings.json"
 
 # Whole directories
 for d in agents commands skills hooks rules; do
@@ -96,5 +115,6 @@ fi
 
 echo ""
 echo "Done. Verify with:  ls -la $DST"
-echo "Changes made in $REPO apply immediately (they're symlinks)."
-echo "To update on another machine:  cd $REPO && git pull"
+echo "Changes made in $REPO apply immediately (they're symlinks) —"
+echo "except settings.json, which is a copy: re-run ./install.sh to sync it."
+echo "To update on another machine:  cd $REPO && git pull && ./install.sh"
