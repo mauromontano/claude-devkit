@@ -10,7 +10,12 @@ set -euo pipefail
 
 MANGO_ENG_DIR="${MANGO_ENG_DIR:-$HOME/Documents/GitHub/mango-engineering}"
 MCP_JSON="$MANGO_ENG_DIR/mcp/mcp.json"
-export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+# Claude Code guarda el MCP user-scope en ~/.claude.json (home). NO forzar
+# CLAUDE_CONFIG_DIR=~/.claude: eso hace que `claude mcp add` escriba en
+# ~/.claude/.claude.json, que el runtime IGNORA (engram quedaba registrado pero inerte).
+# Solo respetamos un CLAUDE_CONFIG_DIR provisto explícitamente por quien invoca.
+if [ -n "${CLAUDE_CONFIG_DIR:-}" ]; then export CLAUDE_CONFIG_DIR; fi
+CFG_LABEL="${CLAUDE_CONFIG_DIR:-~/.claude.json (default)}"
 
 [ -f "$MCP_JSON" ] || { echo "error: $MCP_JSON not found (clone mango-engineering or set MANGO_ENG_DIR)"; exit 1; }
 command -v claude >/dev/null 2>&1 || { echo "error: claude CLI not on PATH"; exit 1; }
@@ -26,7 +31,7 @@ add() { # add <name> [claude mcp add args...]
   echo "  added: $name"
 }
 
-echo "Wiring Mango MCP servers into $CLAUDE_CONFIG_DIR (user scope) ..."
+echo "Wiring Mango MCP servers into $CFG_LABEL (user scope) ..."
 
 # engram — the team's local memory server (binary pinned by the team; must be on PATH)
 if command -v engram >/dev/null 2>&1; then
@@ -76,5 +81,5 @@ fi
 
 echo ""
 echo "Skipped by design: sentry, slack (tokens pending in 1Password), github (token pending)."
-echo "Verify with:   CLAUDE_CONFIG_DIR=\"$CLAUDE_CONFIG_DIR\" claude mcp list"
+echo "Verify with:   claude mcp list"
 echo "Authenticate asana/notion inside a session with /mcp."

@@ -10,7 +10,9 @@ set -uo pipefail
 # y ahí se instalan engram y las tools de uv. Sin esto el check de engram da un ❌ falso.
 export PATH="$HOME/.local/bin:$PATH"
 
-ENGRAM_PIN="1.15.11"
+# Pin LOCAL de engram. Puede ir por delante del pin del repo de equipo
+# (mango-agentic/mango-engineering) mientras se evalúa si vale la pena bumpearlo allá.
+ENGRAM_PIN="1.20.0"
 DEVKIT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GH_DIR="$HOME/Documents/GitHub"
 PASS=0; FAIL=0; WARN=0
@@ -38,12 +40,16 @@ check_account() { # <label> <dir>
   else
     bad "settings.json empty or missing"
   fi
-  if [ -f "$dir/.claude.json" ]; then
+  # El runtime de Claude Code lee el MCP user-scope de ~/.claude.json (home),
+  # NO de $dir/.claude.json. `claude mcp add -s user` (sin CLAUDE_CONFIG_DIR forzado)
+  # escribe ahí; mirar el archivo equivocado daba un ✅ falso.
+  local runtime_json="$HOME/.claude.json"
+  if [ -f "$runtime_json" ]; then
     local servers
-    servers="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(",".join(sorted(d.get("mcpServers",{}).keys())))' "$dir/.claude.json" 2>/dev/null || echo "")"
-    if [ -n "$servers" ]; then ok "user-scope MCP: $servers"; else warn "no user-scope MCP registered"; fi
+    servers="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(",".join(sorted(d.get("mcpServers",{}).keys())))' "$runtime_json" 2>/dev/null || echo "")"
+    if [ -n "$servers" ]; then ok "user-scope MCP: $servers"; else warn "no user-scope MCP registered (corré mango-mcp-setup.sh)"; fi
   else
-    warn ".claude.json missing (account never used?)"
+    warn "~/.claude.json missing (account never used?)"
   fi
 }
 
