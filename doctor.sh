@@ -56,6 +56,16 @@ check_account() { # <label> <dir>
 echo "== Account (una sola: Mango) =="
 check_account mango "$HOME/.claude"
 
+echo "== Capa de equipo (mango-agentic) =="
+# ~/.claude es la capa unificada: personal (devkit) + equipo (mango-agentic).
+# agents/ y skills/ son dirs REALES (no symlinks de dir): personal por symlink
+# por-archivo + equipo copiado por install-local --global.
+AGENTIC_VER="$(cat "$HOME/.claude/.mango-agentic-version" 2>/dev/null || echo "")"
+if [ -n "$AGENTIC_VER" ]; then ok "capa de equipo instalada (mango-agentic v$AGENTIC_VER)"; else bad "capa de equipo NO instalada (corré install.sh; falta ~/.claude/.mango-agentic-version)"; fi
+[ -d "$HOME/.claude/agents" ] && [ ! -L "$HOME/.claude/agents" ] && ok "agents/ es dir real (capa unificada)" || bad "agents/ no es dir real (re-corré install.sh)"
+[ -f "$HOME/.claude/agents/architect.agent.md" ] && ok "roles canónicos presentes (architect, …)" || bad "roles canónicos ausentes (falta la capa de equipo)"
+[ -e "$HOME/.claude/skills/mango-brain/SKILL.md" ] && ok "skill mango-brain presente" || warn "mango-brain ausente (corré setup-brain.sh / install.sh)"
+
 echo "== Editor (VS Code) =="
 CODE="$(command -v code || true)"; [ -n "$CODE" ] || CODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
 if [ -x "$CODE" ]; then

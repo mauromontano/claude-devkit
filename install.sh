@@ -10,6 +10,14 @@ SRC="$REPO/dot-claude"
 DST="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
+# Capa de equipo (canónica): mango-agentic. install.sh orquesta las DOS fuentes en
+# un solo ~/.claude — personal (este devkit) + equipo (mango-agentic). Lo personal
+# NUNCA se propaga a la flota; acá solo consumimos la capa de equipo.
+MANGO_AGENTIC_DIR="${MANGO_AGENTIC_DIR:-$HOME/orca/mango-agentic}"
+# Skills del devkit superseded por la capa de equipo (mango-agentic es canónico para
+# stacks): no se enlazan globalmente; en los repos de stack llegan por sync.sh.
+DEVKIT_SKILL_SKIP=(laravel node-next)
+
 mkdir -p "$DST"
 
 link() {
@@ -41,18 +49,86 @@ copy_file() {
   echo "  copy:   $to <- $from"
 }
 
+# settings.json: en vez de pisar el archivo vivo (que borraría los hooks machine-local
+# que Orca inyecta en runtime — UserPromptSubmit/Stop/SubagentStart/…), MERGEA:
+# el devkit es canónico para sus claves y sus hooks, y se preservan los hooks que
+# referencian a Orca. Backup del vivo antes de escribir. Si no hay vivo, copia base.
+merge_settings() {
+  local base="$1" live="$2"
+  if [ -L "$live" ]; then rm -f "$live"; echo "  unlink: $live (settings.json es copia mergeada, no symlink)"; fi
+  if [ ! -e "$live" ]; then cp "$base" "$live"; echo "  copy:   $live <- $base (no había vivo)"; return; fi
+  cp "$live" "$live.bak-$STAMP"; echo "  backup: $live -> $live.bak-$STAMP"
+  python3 - "$base" "$live" <<'PY'
+import json, sys
+base=json.load(open(sys.argv[1])); live=json.load(open(sys.argv[2]))
+def is_orca(x): return 'orca' in json.dumps(x).lower()
+merged=dict(live)
+for k,v in base.items():
+    if k!='hooks': merged[k]=v            # devkit canónico para sus claves
+bh=base.get('hooks',{}); lh=live.get('hooks',{}); out={}
+for ev in (set(bh)|set(lh)):
+    groups=list(bh.get(ev,[]))            # hooks del devkit
+    for g in lh.get(ev,[]):               # + hooks machine-local de Orca
+        if is_orca(g) and g not in groups: groups.append(g)
+    if groups: out[ev]=groups
+merged['hooks']=out
+json.dump(merged, open(sys.argv[2],'w'), indent=2)
+PY
+  echo "  merge:  $live (devkit + hooks machine-local de Orca preservados)"
+}
+
+# Convierte $1 en un dir REAL: si era symlink de dir completo lo quita (pasamos a
+# capa unificada de dos fuentes); si era un dir real ajeno lo respalda una vez.
+ensure_real_dir() {
+  local p="$1"
+  if [ -L "$p" ]; then
+    rm -f "$p"; echo "  unlink: $p (ahora dir real: capa unificada personal+equipo)"
+  elif [ -e "$p" ] && [ ! -d "$p" ]; then
+    mv "$p" "$p.bak-$STAMP"; echo "  backup: $p -> $p.bak-$STAMP"
+  fi
+  mkdir -p "$p"
+}
+
 echo "Installing claude-devkit into $DST ..."
 
 # Single files
-link      "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
-copy_file "$SRC/settings.json"  "$DST/settings.json"
+link          "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
+merge_settings "$SRC/settings.json" "$DST/settings.json"
 
-# Whole directories
-for d in agents commands skills hooks rules; do
-  if [ -d "$SRC/$d" ]; then
-    link "$SRC/$d" "$DST/$d"
-  fi
+# Dirs de fuente única (personal) → symlink de dir completo.
+for d in commands hooks rules; do
+  [ -d "$SRC/$d" ] && link "$SRC/$d" "$DST/$d"
 done
+
+# agents/ y skills/ = CAPA UNIFICADA. Personal (devkit) por symlink por-archivo
+# (editable en vivo); equipo (mango-agentic) copiado abajo por install-local --global.
+ensure_real_dir "$DST/agents"
+for f in "$SRC"/agents/*.md; do
+  [ -f "$f" ] && ln -sfn "$f" "$DST/agents/$(basename "$f")"
+done
+echo "  agents personales (devkit) enlazados en $DST/agents"
+
+ensure_real_dir "$DST/skills"
+for s in "$SRC"/skills/*; do
+  # incluye dirs y symlinks (incluidos los que Orca puebla en runtime, hoy sin target)
+  [ -d "$s" ] || [ -L "$s" ] || continue
+  n="$(basename "$s")"
+  skip=false; for x in "${DEVKIT_SKILL_SKIP[@]}"; do [ "$n" = "$x" ] && skip=true; done
+  if $skip; then echo "  skip skill (superseded por mango-agentic): $n"; continue; fi
+  ln -sfn "$s" "$DST/skills/$n"
+done
+echo "  skills personales (devkit) enlazados en $DST/skills"
+
+# Capa de equipo canónica: agents por rol + skills de equipo (shared, mango-brain,
+# planning) copiados por el instalador de mango-agentic. No hay choque de nombres
+# con lo personal (agents de equipo usan *.agent.md; skills tienen nombres distintos).
+if [ -x "$MANGO_AGENTIC_DIR/scripts/install-local.sh" ]; then
+  echo "  mango-agentic: instalando capa de equipo (--global) ..."
+  "$MANGO_AGENTIC_DIR/scripts/install-local.sh" --global || \
+    echo "    (falló install-local de mango-agentic; revisar $MANGO_AGENTIC_DIR)"
+else
+  echo "  ⚠️  mango-agentic no encontrado en $MANGO_AGENTIC_DIR (seteá MANGO_AGENTIC_DIR); capa de equipo NO instalada"
+fi
 
 # Execute permission for the hooks
 chmod +x "$SRC"/hooks/*.sh 2>/dev/null || true
