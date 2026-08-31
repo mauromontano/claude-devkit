@@ -152,10 +152,13 @@ fi
 # Bootstrap marketplace plugins (reinstalled from the official marketplace,
 # not vendored — so they keep receiving updates). Edit the list to taste.
 # Guarded: no-ops if the claude CLI isn't on PATH or a plugin is already installed.
+# frontend-design NO se bootstrappea: lo provee mango-agentic como skill de equipo
+# (shared/frontend-design); el plugin queda desactivado en enabledPlugins para no
+# duplicar el skill y mantener paridad con la flota.
 if command -v claude >/dev/null 2>&1; then
   echo "  plugins: bootstrapping from claude-plugins-official ..."
   claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1 || true
-  for p in frontend-design code-review code-simplifier; do
+  for p in code-review code-simplifier; do
     claude plugin install "$p@claude-plugins-official" >/dev/null 2>&1 || true
   done
 fi
