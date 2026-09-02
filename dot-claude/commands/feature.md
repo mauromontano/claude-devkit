@@ -15,5 +15,5 @@ write code yet. Start with **Phase 0 (brainstorm)**:
 4. If the design decision isn't obvious, sketch 2-3 approaches with their trade-offs.
 
 Once the problem is clear, switch to **plan mode** and delegate the architecture design
-to the `architecture-planner` subagent. Only with the plan approved do we move on to
+to the `architect` subagent. Only with the plan approved do we move on to
 docs and implementation. One stage at a time, green and reviewed before advancing.

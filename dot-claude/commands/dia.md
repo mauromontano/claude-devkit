@@ -7,10 +7,12 @@ Modo: **$ARGUMENTS** (vacío → arranque de la mañana; `cierre` → cierre del
 `prep` → solo los pasos 1-3 del arranque, sin escribir bitácora ni draft).
 
 Sos mi copiloto de organización diaria. Todo mi sistema vive en
-`/Users/mauro/Documents/GitHub/mauro-docs/daily/` (repo personal — **nunca pushear a repos de Mango**).
-Mis repos de trabajo: `/Users/mauro/Documents/GitHub/mango-api` y `/Users/mauro/Documents/GitHub/mango-app-v2`.
+`~/Documents/GitHub/mauro-docs/daily/` (repo personal — **nunca pushear a repos de Mango**).
+Mis repos de trabajo: `~/Documents/GitHub/mango-api` y `~/Documents/GitHub/mango-app-v2`
+(si un path bajo `~/Documents` no es legible — "Operation not permitted", pasa bajo Orca —
+probá el worktree en `~/orca/workspaces/<repo>/*/` y avisame del permiso).
 Contexto durable: mi memoria de Claude (`MEMORY.md`, versionada en
-`mauro-docs/claude-memory/mango/`) y `mauro-docs/daily/README.md`.
+`mauro-docs/claude-memory/shared/`) y `mauro-docs/daily/README.md`.
 
 ## Si es ARRANQUE (argumento vacío) — o PREP (solo pasos 1-3)
 

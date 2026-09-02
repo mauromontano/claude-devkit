@@ -5,9 +5,9 @@ argument-hint: [optional stage context]
 
 Review the stage that just finished, before moving on.
 
-1. Delegate to the `code-reviewer` subagent (always): quality, design, coverage.
+1. Delegate to the `qa` subagent (always): quality, design, coverage.
 2. If the stage touches auth, payments, sensitive data, webhooks, or external input,
-   **also** delegate to the `security-reviewer` subagent.
+   **also** delegate to the `security` subagent.
 3. Delegate to the `spec-verifier` subagent (verify): confirm the stage **meets the
    spec scenarios** (`docs/<feature>-spec.md`), scenario by scenario. An uncovered
    scenario is blocking.

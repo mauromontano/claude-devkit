@@ -66,8 +66,8 @@ skill or the CLI.
 
 ## 3. Subagents already included in this devkit
 
-`architecture-planner`, `code-reviewer`, `test-writer` (characterization tests),
-`security-reviewer`, `docs-writer`, `spec-verifier`. They cover planning, refactor
+`architect`, `qa`, `test-writer` (characterization tests),
+`security`, `docs-writer`, `spec-verifier`. They cover planning, refactor
 safety nets, and per-stage review without polluting the main context. If a recurring
 need appears (e.g. a `migration-reviewer` for schema changes, or a `perf-auditor`),
 add one more `.md` in `dot-claude/agents/`.

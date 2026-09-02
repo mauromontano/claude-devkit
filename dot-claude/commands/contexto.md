@@ -3,11 +3,20 @@ description: Cargar el contexto full-stack de una feature de Mango (spec oficial
 argument-hint: "[nombre-feature] (default: mango-proyectos)"
 ---
 
-Feature: **$ARGUMENTS** (si está vacío → usá `mango-proyectos`).
+Feature: **$ARGUMENTS** (si está vacío → inferila del nombre de la branch actual; si tampoco
+da señal, usá `mango-proyectos`).
 
 Sos el loader de contexto para trabajo full-stack en Mango. Corré esto al abrir una sesión
 nueva en `mango-api` o `mango-app-v2` (o cualquier repo) para cargar todo el contexto de la
-feature sin re-explicar nada. Rutas base: los repos viven en `/Users/mauro/Documents/GitHub/`.
+feature sin re-explicar nada.
+
+**Cómo encontrar cada repo** (probá en este orden, usá el primero que exista y sea legible):
+1. Worktrees de Orca: `~/orca/workspaces/<repo>/*/` (puede haber varios worktrees; preferí
+   el de la branch relevante, o `main`/`master`).
+2. Checkout clásico: `~/Documents/GitHub/<repo>/` (puede no ser legible desde Orca por
+   permisos de macOS — si da "Operation not permitted", seguí con los worktrees y avisá).
+
+Nunca asumas un path absoluto con el home hardcodeado: resolvé siempre desde `$HOME`.
 
 ## 1. Fuente de verdad del equipo (leé primero)
 
@@ -63,6 +72,6 @@ app-v2 → front del cliente. Los otros van como contexto de apoyo.
 ## Reglas de mi flujo (aplican siempre)
 
 - TDD (test primero), un stage = un commit = una PR, Conventional Commits, **paro al cerrar
-  cada stage** para revisar. `security-reviewer` en PRs que toquen auth/archivos/policy.
+  cada stage** para revisar. `security` en PRs que toquen auth/archivos/policy.
 - Nada personal se pushea a repos de Mango. Mi organización diaria vive en `mauro-docs/daily/`
   (`/dia`); esto es solo carga de contexto, no escribe nada.

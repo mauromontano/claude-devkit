@@ -13,11 +13,11 @@ Building a non-trivial feature follows one loop. The golden rule holds throughou
    only the questions that change the design, and sketches 2-3 approaches when the
    decision isn't obvious. No code yet.
 2. **plan mode** (shift+tab) — a layered plan with the **API contract first**, split into
-   small, committable stages. The `architecture-planner` agent designs the trade-offs.
+   small, committable stages. The `architect` agent designs the trade-offs.
 3. **`/spec` · `/document` · `/tasks` · `/diagram`** — write the spec (Given/When/Then
    scenarios), the design doc, the stage checklist, and a diagram. Commit before coding.
 4. **`/stage <n>`** — implement one stage with TDD: red → green → refactor → verify.
-5. **`/review`** — `code-reviewer` (always), plus `security-reviewer` and `spec-verifier`
+5. **`/review`** — `qa` (always), plus `security` and `spec-verifier`
    as needed. Resolve blockers, then the **human gate**: Claude stops and waits for your
    OK before the next stage.
 6. **`/commit` · `/pr`** — close out with a conventional commit and a PR built from the
@@ -72,9 +72,9 @@ commands, or on request.
 
 | Agent | Role |
 |-------|------|
-| `architecture-planner` | Designs the layered plan and trade-offs (plan phase) |
-| `code-reviewer` | Audits each stage's diff for quality, coverage, design |
-| `security-reviewer` | Audits stages touching auth/payments/sensitive data/external input |
+| `architect` | Designs the layered plan and trade-offs (plan phase) |
+| `qa` | Audits each stage's diff for quality, coverage, design |
+| `security` | Audits stages touching auth/payments/sensitive data/external input |
 | `spec-verifier` | Checks the implementation against the spec scenarios, one by one |
 | `docs-writer` | Generates and maintains the feature's docs |
 | `test-writer` | Writes characterization tests for `/refactor`'s safety net |

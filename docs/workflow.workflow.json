@@ -20,7 +20,7 @@
   "mainPath": ["brainstorm", "plan", "docs", "stage", "review", "close"],
   "nodes": [
     { "id": "brainstorm", "lane": "design", "col": 0, "type": "external", "label": "Brainstorm", "sublabel": "/feature", "tag": "scales with complexity" },
-    { "id": "plan", "lane": "design", "col": 1, "type": "backend", "label": "Layered plan", "sublabel": "plan mode", "tag": "architecture-planner" },
+    { "id": "plan", "lane": "design", "col": 1, "type": "backend", "label": "Layered plan", "sublabel": "plan mode", "tag": "architect" },
     { "id": "docs", "lane": "build", "col": 2, "type": "cloud", "label": "Spec+Docs", "sublabel": "/spec · /doc · /tasks", "tag": "scenarios + diagram" },
     { "id": "stage", "lane": "build", "col": 3, "type": "backend", "label": "TDD stage", "sublabel": "/stage", "tag": "red→green→refactor" },
     { "id": "review", "lane": "review", "col": 4, "type": "security", "label": "Review", "sublabel": "/review", "tag": "code · security · verify" },

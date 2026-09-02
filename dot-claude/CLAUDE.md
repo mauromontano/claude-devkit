@@ -57,9 +57,9 @@ lives in the feature's doc.
 
 ## Quality and security
 
-- Every stage goes through the `code-reviewer` subagent before advancing. Features
+- Every stage goes through the `qa` subagent before advancing. Features
   touching auth, payments, sensitive data, or external input also go through
-  `security-reviewer`.
+  `security`.
 - No hardcoded secrets. External input always validated. Queries always parameterized.
 - Before a commit/PR: clean lint, green tests, updated docs.
 

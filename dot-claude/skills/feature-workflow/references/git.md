@@ -2,7 +2,7 @@
 
 Single source of truth for commits, branches, PRs, and delivery. The constitution
 carries the essential block; this file has the detail. Referenced by `/pr`, `/feature`
-(plan phase), and `architecture-planner`.
+(plan phase), and `architect`.
 
 ## Commit messages (Conventional Commits)
 

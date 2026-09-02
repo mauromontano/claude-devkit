@@ -51,7 +51,7 @@ Use **plan mode** (propose without touching disk). The plan must include:
 6. **Delivery strategy** — apply the branching/migration rules in `git.md` (own PR for
    schema changes, merge order, independently deployable parts).
 
-Delegate architecture design and alternatives to the `architecture-planner` subagent,
+Delegate architecture design and alternatives to the `architect` subagent,
 which reasons about trade-offs without polluting the main context.
 
 **Output:** an approved plan, split into numbered stages.
@@ -101,9 +101,9 @@ so errors surface immediately, not at the end.
 
 When closing a stage, `/review` delegates to the review subagents:
 
-- **`code-reviewer`** (always): quality, style vs CLAUDE.md, test coverage, N+1,
+- **`qa`** (always): quality, style vs CLAUDE.md, test coverage, N+1,
   error handling, unnecessary complexity.
-- **`security-reviewer`** (if the stage touches auth, payments, sensitive data, or
+- **`security`** (if the stage touches auth, payments, sensitive data, or
   external input): injection, XSS/CSRF, secrets handling, authorization, input validation.
 - **`spec-verifier`** (verify): checks the implementation **meets the spec scenarios**
   (Phase 2), one by one, and ticks the stage in `docs/<feature>-tasks.md`. Not the same
@@ -140,10 +140,10 @@ review doesn't replace the human review — it prepares it.
 | Phase | Command | Subagent | Hook | Skill |
 |-------|---------|----------|------|-------|
 | 0 Brainstorm | `/feature` | — | — | — |
-| 1 Plan | plan mode | `architecture-planner` | — | — |
+| 1 Plan | plan mode | `architect` | — | — |
 | 2 Spec+docs+diagram | `/spec`, `/document`, `/tasks`, `/diagram` | `docs-writer` | — | archify |
 | 3 Implementation | `/stage` | — | PostToolUse (lint/test) | per stack |
-| 4 Review + Verify | `/review` | `code-reviewer`, `security-reviewer`, `spec-verifier` | — | — |
+| 4 Review + Verify | `/review` | `qa`, `security`, `spec-verifier` | — | — |
 | 5 Close + Archive | commit/PR | — | PreToolUse (protects files) | — |
 
 ---

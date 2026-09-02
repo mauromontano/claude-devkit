@@ -38,9 +38,9 @@ If none apply, continue here as a lightweight change.
 ## 4. Scale the depth to the size
 
 - **trivial** → the minimal change, run the full suite green, propose the commit.
-- **medium** → a short plan first (no full spec/diagram), then the `code-reviewer`
+- **medium** → a short plan first (no full spec/diagram), then the `qa`
   subagent, then the **human gate** (stop and wait for my OK), then commit. Add
-  `security-reviewer` if it touches auth, payments, sensitive data, or external input.
+  `security` if it touches auth, payments, sensitive data, or external input.
 
 ## 5. Commit
 

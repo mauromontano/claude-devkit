@@ -13,11 +13,11 @@ process.
 0. **Brainstorm** — understand the problem first; ask only the questions that change the
    design; sketch 2-3 approaches with trade-offs when the decision isn't obvious.
 1. **Plan** — plan mode; **API contract first**; layered design; incremental stages,
-   each committable with an explicit "done" criterion. Delegate to `architecture-planner`.
+   each committable with an explicit "done" criterion. Delegate to `architect`.
 2. **Spec + docs + diagram** — `/spec`, `/document`, `/tasks`, `/diagram` (archify).
    Commit before coding.
 3. **Incremental TDD** — per stage (`/stage`): red → green → refactor → verify.
-4. **Review** — `/review` per stage: `code-reviewer` always, `security-reviewer` when the
+4. **Review** — `/review` per stage: `qa` always, `security` when the
    stage touches auth/payments/sensitive data/external input, `spec-verifier` against the
    spec. Then the human gate applies (see constitution).
 5. **Close** — update docs, run the full suite, commit/PR, archive the spec to

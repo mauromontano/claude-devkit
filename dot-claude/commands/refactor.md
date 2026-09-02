@@ -12,7 +12,7 @@ time; I review every diff.
 Lean on the rest of the setup when it helps (without asking permission for the obvious):
 - The **language/framework skill** matching the project's stack.
 - The **`test-writer`** subagent to write the characterization tests of Phase 2.
-- The **`code-reviewer`** and **`spec-verifier`** subagents in Phase 4, to confirm
+- The **`qa`** and **`spec-verifier`** subagents in Phase 4, to confirm
   quality and that behavior didn't change.
 - **archify** if a before/after diagram of the structure helps explain the refactor.
 - A **docs** skill if you need a library's real API.
