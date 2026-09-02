@@ -139,9 +139,37 @@ copy_file      "$SRC/CLAUDE.md"      "$DST/CLAUDE.md"
 merge_settings "$SRC/settings.json"  "$DST/settings.json"
 
 # Dirs de fuente única (personal) → copia completa del dir.
-for d in commands hooks rules; do
+for d in hooks rules; do
   [ -d "$SRC/$d" ] && copy_tree_owned "$SRC/$d" "$DST/$d"
 done
+
+# commands/ tiene DOS fuentes personales: el devkit (dueño del dir) y los extras de
+# mauro-docs/commands (p. ej. /tarea, cuya fuente vive junto a sus datos en mauro-docs).
+# Regla de durabilidad: un extra ya instalado NUNCA se pierde en un reinstall, aunque
+# mauro-docs no esté legible (TCC) o no esté al día; si commands/ de mauro-docs es
+# legible, además se refresca desde ahí.
+MAURO_DOCS_DIR="${MAURO_DOCS_DIR:-$HOME/Documents/GitHub/mauro-docs}"
+tmp_extras="$(mktemp -d)"
+if [ -d "$DST/commands" ]; then
+  for f in "$DST"/commands/*.md; do
+    { [ -f "$f" ] && [ ! -L "$f" ]; } || continue
+    b="$(basename "$f")"
+    [ -f "$SRC/commands/$b" ] || cp "$f" "$tmp_extras/$b"
+  done
+fi
+copy_tree_owned "$SRC/commands" "$DST/commands"
+for f in "$tmp_extras"/*.md; do
+  [ -f "$f" ] || continue
+  cp "$f" "$DST/commands/$(basename "$f")"
+  echo "  keep:   $DST/commands/$(basename "$f") (extra personal, fuera del devkit)"
+done
+rm -rf "$tmp_extras"
+if ls "$MAURO_DOCS_DIR"/commands/*.md >/dev/null 2>&1; then
+  for f in "$MAURO_DOCS_DIR"/commands/*.md; do
+    cp "$f" "$DST/commands/$(basename "$f")"
+    echo "  overlay: $DST/commands/$(basename "$f") <- mauro-docs/commands"
+  done
+fi
 
 # El hook de memoria ejecuta link-memory.sh como VECINO en $DST/hooks (nunca un
 # path hacia ~/Documents): se copia junto a los hooks.

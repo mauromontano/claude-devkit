@@ -19,17 +19,22 @@ Contexto durable: mi memoria de Claude (`MEMORY.md`, versionada en
 1. **Leé el estado**, en paralelo:
    - **Si existe `daily/.prep-<hoy>.md`** (lo genera launchd a las 8:45): usalo como insumo
      — ya trae git/PRs/backlog — y no re-recolectes lo que ya tiene.
-   - `daily/backlog-mango.md` y `daily/backlog-personal.md`.
+   - **El board** `daily/backlog-mango.md` (formato board por estado — convención en
+     `claude-memory/shared/tarea-board.md`): leé **🔵 En progreso primero**, después
+     ⚪ Pendiente y 🟠 Bloqueado. También `daily/backlog-personal.md` (ese sigue en checklist).
    - La última bitácora `daily/YYYY-MM-DD.md` (la de fecha más reciente).
    - **Lo que hicimos en Claude**: engram (`mem_context` + `mem_search` de ayer/hoy, los
      `mem_save` de cierre de stage `mm-…`). Es la fuente primaria de "qué se decidió y qué
      quedó a medias" — más fiel que inferir de git.
-   - En cada repo (mango-api, mango-app-v2): `git status -s`, `git log --oneline -5`, mi branch actual,
-     y el estado de las branches de Ema (`feat/proyectos-expediente-datos`, `feat/proyectos-expediente`).
-     Si `gh` está autenticado, mis PRs abiertas (`gh pr list --author @me`) y checks.
+   - **Mis PRs en toda la org** (el motor de `/tarea sync`):
+     `gh search prs --owner MangoTec --author @me --state open` (+ checks de las relevantes).
+     No dependas de estar parado en un repo. El estado de las branches de Ema
+     (`feat/proyectos-expediente-*`) seguilo en mango-api/app-v2 si estás en uno de esos repos.
    - Si el MCP de Asana responde, mis tareas de la ola (si no, seguí sin trabarte).
-2. **Sincronizá:** marcá en los backlogs lo que quedó cerrado ayer (según la última bitácora + git),
-   detectá bloqueos nuevos.
+2. **Sincronizá el board** (equivalente a `/tarea sync`): foldeá las PRs reales al board —
+   PR mergeada/cerrada → mové la fila a ✅ Hecho; PR nueva mía sin fila → agregala a
+   🔵 En progreso con `repo·branch·#PR`; detectá bloqueos nuevos y movelos a 🟠.
+   En `backlog-personal.md` marcá `[x]` lo cerrado (ese no es board).
 3. **Proponé el día:** 3-5 focos priorizados (P0/P1), alineados a la Ola 1 (bucket "Respaldo") +
    desasociar compras. Para cada foco, el **siguiente paso concreto** — nunca dejes "en qué sigo" en duda.
 4. **Escribí la bitácora de hoy** `daily/YYYY-MM-DD.md` (fecha de hoy) desde `daily/_template-dia.md`,
@@ -62,12 +67,13 @@ la bitácora ni el draft. Es el modo del job automatizado / vistazo rápido.
 
 1. **Reconstruí el día desde lo que registramos en Claude**: engram (`mem_search` del día,
    los `mem_save` de cierre de stage) + git/PRs. Preguntame solo lo que no surja de ahí.
-   **Actualizá los dos backlogs** (marcá `[x]`, movés a "Hecho").
+   **Actualizá el board** `backlog-mango.md`: **promové a ✅ Hecho** las filas cerradas
+   (PR mergeada o entregable terminado), lo que quedó a medias baja a ⚪/🟠 con su próximo
+   paso anotado. En `backlog-personal.md` marcá `[x]` (ese sigue en checklist).
 2. Actualizá la bitácora de hoy: "Ayer cerré" pasa a reflejar lo real, bloqueos al día.
 3. Si cambió algo **durable** (nuevo entregable, cambio de reparto, decisión de arquitectura), actualizá
-   la memoria de Claude (versionada: `mauro-docs/claude-memory/mango/` — ambas cuentas
-   symlinkean ahí) y su `MEMORY.md`. Guardá un resumen del día en engram (`mem_save`,
-   convención `mm-...`).
+   la memoria de Claude (versionada: `mauro-docs/claude-memory/shared/`) y su `MEMORY.md`.
+   Guardá un resumen del día en engram (`mem_save`, convención `mm-...`).
 4. Resumen corto de lo cerrado y lo que queda para mañana.
 5. Si es **viernes**, recordame correr `/semana` (la fuente de sabiduría).
 
