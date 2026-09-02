@@ -31,13 +31,13 @@ This repo packages all of that as versionable configuration.
 ```
 claude-devkit/
 ├── README.md                  # this file — the master blueprint
-├── install.sh                 # symlinks everything into ~/.claude on a new machine
+├── install.sh                 # copies everything into ~/.claude (copy-based; symlinks broke under macOS TCC)
 ├── CLAUDE.md                  # about this repo itself (the constitution lives in dot-claude/)
 ├── .gitignore
 ├── docs/
 │   ├── ECOSYSTEM.md           # recommended skills / plugins / MCPs and why
 │   └── workflow.workflow.json # flow diagram source (regenerate HTML with /diagram)
-└── dot-claude/                # symlinked to ~/.claude by install.sh
+└── dot-claude/                # copied to ~/.claude by install.sh
     ├── CLAUDE.md              # engineering constitution (global, loaded every session)
     ├── settings.json          # hooks (post-edit lint), statusline, model
     ├── agents/                # subagents: planner, code/security reviewers, spec verifier, test/docs writers
@@ -48,8 +48,14 @@ claude-devkit/
 ```
 
 > It's stored as `dot-claude/` (not `.claude/`) because this is a dotfiles repo:
-> `install.sh` symlinks it to `~/.claude/`. Edit in the repo, `git push`, and on the
-> other machine `git pull`.
+> `install.sh` **copies** it into `~/.claude/`. Edit in the repo, re-run `./install.sh`
+> (and `git push`; on the other machine `git pull && ./install.sh`).
+>
+> **Why copies and not symlinks (2026-09-02):** `~/Documents` is TCC-protected on
+> macOS. When Claude Code runs under an app without that permission (e.g. Orca),
+> symlinks into `~/Documents/GitHub/claude-devkit` fail with "Operation not
+> permitted" and commands/hooks/agents silently disappear. Anything Claude reads at
+> runtime must be a real file under `~/.claude`.
 
 ---
 
@@ -66,7 +72,7 @@ One line per phase:
 | **1. Plan** | Plan mode: layered design + incremental stages, each with a "done" criterion. | plan mode (shift+tab) |
 | **2. Spec + docs + diagram** | `docs/<feature>-spec.md`, `docs/<feature>.md`, task checklist, archify diagram. | `/spec`, `/document`, `/tasks`, `/diagram` |
 | **3. Implementation** | Stage by stage, TDD: red test → code → green → refactor. | `/stage <n>` |
-| **4. Per-stage review** | `code-reviewer` (plus `security-reviewer` and `spec-verifier` as needed) audit before advancing. | `/review` |
+| **4. Per-stage review** | `qa` (plus `security` and `spec-verifier` as needed) audit before advancing. | `/review` |
 | **5. Close** | Docs updated, full suite run, conventional commit/PR, spec archived. | `/commit`, `/pr` |
 
 Other entry points: `/task` (sizes a change and scales the depth, routing to
@@ -87,9 +93,11 @@ cd ~/claude-devkit
 ./install.sh
 ```
 
-`install.sh` symlinks `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `hooks/`,
-`rules/`, and `settings.json` into `~/.claude/`, so **every project** on that machine
-inherits the setup. It also runs `npm install` for the bundled **archify** skill (its
+`install.sh` copies `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `hooks/`,
+`rules/`, and `settings.json` (merged, preserving Orca's machine-local hooks and
+accumulated permissions) into `~/.claude/`, so **every project** on that machine
+inherits the setup. It also installs the team layer by running
+`mango-agentic/scripts/install-local.sh --global`. It also runs `npm install` for the bundled **archify** skill (its
 only dependency, `ajv`, is optional) and **bootstraps marketplace plugins** from the
 official marketplace (see below). Edit once in the repo, `git push`, and on the other
 machine `git pull` — no manual copying.
@@ -99,7 +107,7 @@ For project-specific configuration, copy what's needed into that repo's `.claude
 
 ### Bundled vs bootstrapped
 
-- **Bundled** (vendored in the repo, travel via symlink): the workflow skills, the
+- **Bundled** (vendored in the repo, installed by copy): the workflow skills, the
   `archify` diagram skill, and the `context7` docs rule.
 - **Bootstrapped** (reinstalled from source, not vendored — so they keep getting
   updates): the official plugins `frontend-design`, `code-review`, `code-simplifier`, and

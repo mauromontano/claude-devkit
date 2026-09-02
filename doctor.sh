@@ -22,19 +22,27 @@ bad()  { echo "  ❌ $1"; FAIL=$((FAIL+1)); }
 warn() { echo "  ⚠️  $1"; WARN=$((WARN+1)); }
 
 check_account() { # <label> <dir>
-  local label="$1" dir="$2" broken=0 missing=0
+  local label="$1" dir="$2" linked=0 missing=0
   echo "[$label] $dir"
   if [ ! -d "$dir" ]; then bad "config dir missing"; return; fi
+  # Modelo COPIA (2026-09-02): nada de lo que Claude lee en runtime puede ser un
+  # symlink hacia ~/Documents (TCC rompe bajo Orca). Un symlink acá = esquema viejo.
   for item in CLAUDE.md settings.json agents commands skills hooks rules; do
     local p="$dir/$item"
     if [ -L "$p" ]; then
-      [ -e "$p" ] || { bad "$item: broken symlink"; broken=1; }
+      bad "$item: es symlink (esquema viejo — re-corré install.sh)"; linked=1
     elif [ ! -e "$p" ]; then
       missing=1
     fi
   done
-  [ "$broken" -eq 0 ] && [ "$missing" -eq 0 ] && ok "devkit symlinks in place" \
+  [ "$linked" -eq 0 ] && [ "$missing" -eq 0 ] && ok "devkit instalado por copia (sin symlinks)" \
     || { [ "$missing" -eq 1 ] && bad "devkit not fully installed (run install.sh with CLAUDE_CONFIG_DIR=$dir)"; }
+  # Symlinks residuales del esquema viejo dentro de agents/skills
+  if find "$dir/agents" "$dir/skills" -maxdepth 1 -type l 2>/dev/null | grep -q .; then
+    warn "quedan symlinks del esquema viejo dentro de agents/ o skills/ (re-corré install.sh)"
+  fi
+  [ -x "$dir/hooks/link-memory.sh" ] && ok "link-memory.sh copiado junto a los hooks" \
+    || bad "hooks/link-memory.sh ausente (el hook de memoria no puede correr; re-corré install.sh)"
   if [ -f "$dir/settings.json" ] && [ "$(tr -d '[:space:]{}' < "$dir/settings.json" | wc -c)" -gt 0 ]; then
     ok "settings.json non-empty"
   else
@@ -96,15 +104,15 @@ else
 fi
 
 echo "== Team MCP drift (current repo) =="
-CANON="$GH_DIR/mango-engineering/mcp/mcp.json"
-if [ -f ".vscode/mcp.json" ] && [ -f "$CANON" ]; then
-  if diff -q ".vscode/mcp.json" "$CANON" >/dev/null 2>&1; then
-    ok ".vscode/mcp.json matches the canonical mcp.json"
+CANON="${MANGO_AGENTIC_DIR:-$HOME/orca/mango-agentic}/mcp/mcp.claude.json"
+if [ -f ".mcp.json" ] && [ -f "$CANON" ]; then
+  if diff -q ".mcp.json" "$CANON" >/dev/null 2>&1; then
+    ok ".mcp.json matches mango-agentic canonical (mcp.claude.json)"
   else
-    warn ".vscode/mcp.json drifts from mango-engineering canonical"
+    warn ".mcp.json drifts from mango-agentic canonical"
   fi
 else
-  echo "  ➖ skipped (no .vscode/mcp.json here or canonical not cloned)"
+  echo "  ➖ skipped (no .mcp.json here or mango-agentic not cloned)"
 fi
 
 echo ""

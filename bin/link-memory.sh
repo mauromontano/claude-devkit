@@ -22,7 +22,9 @@ CFG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 PROJECTS="$CFG/projects"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
-mkdir -p "$SHARED"
+# El target vive bajo ~/Documents (TCC): bajo una app sin permiso este mkdir falla,
+# pero CREAR los symlinks no requiere leer el target — no hay que abortar por esto.
+mkdir -p "$SHARED" 2>/dev/null || true
 
 # Claude Code deriva el nombre del dir de proyecto del cwd cambiando "/" por "-".
 slug() { printf '%s' "$1" | sed 's#/#-#g'; }
@@ -38,22 +40,30 @@ link_one() {
     fi
     rm -f "$mem"
   elif [ -d "$mem" ]; then
-    for f in "$mem"/*; do
-      [ -e "$f" ] || continue
-      base="$(basename "$f")"
-      if [ -e "$SHARED/$base" ]; then
-        if cmp -s "$f" "$SHARED/$base"; then
-          rm -f "$f"
+    if [ -w "$SHARED" ] 2>/dev/null; then
+      for f in "$mem"/*; do
+        [ -e "$f" ] || continue
+        base="$(basename "$f")"
+        if [ -e "$SHARED/$base" ]; then
+          if cmp -s "$f" "$SHARED/$base"; then
+            rm -f "$f"
+          else
+            mv "$f" "$SHARED/${base%.md}.dup-$STAMP.md"
+            echo "  conflicto: $base guardado como ${base%.md}.dup-$STAMP.md"
+          fi
         else
-          mv "$f" "$SHARED/${base%.md}.dup-$STAMP.md"
-          echo "  conflicto: $base guardado como ${base%.md}.dup-$STAMP.md"
+          mv "$f" "$SHARED/$base"
+          echo "  migrado: $base -> shared/"
         fi
-      else
-        mv "$f" "$SHARED/$base"
-        echo "  migrado: $base -> shared/"
-      fi
-    done
-    rmdir "$mem" 2>/dev/null || { mv "$mem" "$mem.bak-$STAMP"; echo "  backup:  $mem.bak-$STAMP"; }
+      done
+      rmdir "$mem" 2>/dev/null || { mv "$mem" "$mem.bak-$STAMP"; echo "  backup:  $mem.bak-$STAMP"; }
+    else
+      # Sin acceso al shared (TCC): NO se migra ni se borra nada — se aparta el dir
+      # con backup y se linkea igual; migrar el .bak es manual desde una terminal
+      # con permiso.
+      mv "$mem" "$mem.bak-$STAMP"
+      echo "  backup:  $mem.bak-$STAMP (shared no legible desde acá; migralo a mano)"
+    fi
   fi
 
   ln -sfn "$SHARED" "$mem"
@@ -79,7 +89,7 @@ case "${1-}" in
     fi
     echo ""
     echo "Archivos en la memoria compartida:"
-    ls -1 "$SHARED" | sed 's/^/  /'
+    ls -1 "$SHARED" 2>/dev/null | sed 's/^/  /' || echo "  (shared no legible desde esta app — TCC)"
     ;;
   *)
     link_one "$PROJECTS/$(slug "$1")"
